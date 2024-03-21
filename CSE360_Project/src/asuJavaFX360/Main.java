@@ -1,9 +1,9 @@
 /* 
  * ASU Spring 2024 CSE 360 11057
  * Authors: Haroon Radmard, Nicholas Abate, Aiden Felix, Jackson Silvey, Chirag Jagadish
- * Version: 1.0.0.1
+ * Version: 1.0.1.0
  * Original Version: March 19, 2024
- * Last Updated: March 19, 2024
+ * Last Updated: March 20, 2024
  * 
  * 1. Introduction
  * The following is the implementation of an office automation system for a pediatric doctor's office. The system is 
@@ -43,7 +43,6 @@
  *  
 */
 
-
 package asuJavaFX360;
 
 //import statements 
@@ -56,26 +55,28 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+	private Database HealthcareProviderDataBase = new Database();
+	
     @Override
-    public void start(Stage primaryStage) {
-        // Get screen dimensions from user computer 
-        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        double screenX = screenBounds.getWidth();
-        double screenY = screenBounds.getHeight();
-
+    public void start(Stage loginStage) {
         // Create LoginPortal instance and display
-        LoginPortal loginPortal = new LoginPortal((int) screenX, (int) screenY);
+        LoginPortal loginPortal = new LoginPortal(HealthcareProviderDataBase);
         loginPortal.displayInterface();
-
-        // Setup JavaFX stage
-        primaryStage.setTitle("Portal Interface");
-        primaryStage.setScene(new Scene(new StackPane(new Text("Portal Interface Displayed")), screenX, screenY));
-        primaryStage.show();
+        
+        //testing functionality of HealthcareProvider class and database
+        HealthcareProvider admin = new HealthcareProvider();
+    	admin.setUsername("testUsername");
+    	admin.setPassword("testPassword");
+    	admin.printAll();
+    	HealthcareProviderDataBase.addHealthcareProvider(admin);
+    	
+    	
     }
 
     public static void main(String[] args) {
         launch(args);
     }
+    
 }
 
 
