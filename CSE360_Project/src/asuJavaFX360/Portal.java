@@ -20,11 +20,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.scene.layout.HBox;
 
 abstract class Portal {
@@ -41,113 +42,62 @@ abstract class Portal {
     
 }
 
-class PatientPortal extends Portal {
-    public PatientPortal() {
-        super(); // calls the constructor of the parent class (Portal)
-    }
 
-    @Override
-    public void displayInterface() {
-        System.out.println("Displaying Patient Portal with dimensions: " + xDimension + "x" + yDimension);
-        // Implement interface display specific to PatientPortal
-    }
-}
-
-class HealthcareProviderPortal extends Portal {
-    public HealthcareProviderPortal() {
-        super(); // calls the constructor of the parent class (Portal)
-    }
-
-    @Override
-    public void displayInterface() {
-        System.out.println("Displaying Healthcare Provider Portal with dimensions: " + xDimension + "x" + yDimension);
-        // Implement interface display specific to HealthcareProviderPortal
-        
-        Stage HealthcareProviderStage = new Stage();
-        HealthcareProviderStage.setTitle("Health care Provider Portal Interface");
-        HealthcareProviderStage.setScene(new Scene(new StackPane(new Text("Health Care Provider Portal Displayed")), this.xDimension, this.yDimension));
-        HealthcareProviderStage.show();
-    }
-}
-
-class LoginPortal extends Portal {
-    private Database database;
-    private Stage loginStage;
-	
-    public LoginPortal(Database database) {
-       super(); // calls the constructor of the parent class (Portal)
-       this.database = database;
-    }
-
-    @Override
-    public void displayInterface() {
-    	//first create the stage
-    	this.loginStage = new Stage();
-    	loginStage.setTitle("Login Portal Interface");
-    	
-    	//input boxes for username and password
-    	Label usernameLabel = new Label("Username:");
-    	TextField usernameField = new TextField();
-    	Label passwordLabel = new Label("Password:");
-    	TextField passwordField = new TextField();
-    	
-    	//Preferred width for labels and text fields 
-    	usernameLabel.setPrefWidth(this.xDimension / 4);
-        passwordLabel.setPrefWidth(this.xDimension / 4);
-        usernameField.setPrefWidth(this.xDimension / 4);
-        passwordField.setPrefWidth(this.xDimension / 4);
-    	
-    	//login button
-    	Button loginButton = new Button("Login");
-    	
-    	//logic for login button action (to be implemented) 
-    	loginButton.setOnAction(event -> login(usernameField.getText(), passwordField.getText(), database));
-    	
-    	// Create HBox for username input
-        HBox usernameBox = new HBox(5);
-        usernameBox.setAlignment(Pos.CENTER);
-        usernameBox.getChildren().addAll(usernameLabel, usernameField);
-
-        // Create HBox for password input
-        HBox passwordBox = new HBox(5);
-        passwordBox.setAlignment(Pos.CENTER);
-        passwordBox.getChildren().addAll(passwordLabel, passwordField);
-
-        // Create a VBox to organize components vertically
-        VBox vBox = new VBox(10); // Set spacing between components
-        vBox.setAlignment(Pos.CENTER); // Center-align components
-        vBox.getChildren().addAll(usernameBox, passwordBox, loginButton);
-
-    	
-    	//set the Scene with the desired layout
-    	Scene scene = new Scene(new StackPane(vBox), this.xDimension, this.yDimension);
-    	this.loginStage.setScene(scene);
-    	this.loginStage.show();
-    }
-    
-    //Method to handle login button action MORE COMMENTS NEEDED 
-    private void login(String username, String password, Database database) {
-    	System.out.println("Login button clicked with username: " + username + " with password: " + password);
-    	accountChecker checker = new accountChecker();
-    	System.out.println(checker.isValidUserLoginHealthcareProvider(username, password, database));
-    	if(checker.isValidUserLoginHealthcareProvider(username, password, database)) {
-    		HealthcareProviderPortal healthcareProviderPortal = new HealthcareProviderPortal();
-        	healthcareProviderPortal.displayInterface();
-        	this.loginStage.close();
-        	System.out.println("Login Screen Closed"); //test line TO BE DELETED 
-    	}
-    	
-    }
-}
 
 class SignUpPortal extends Portal {
     public SignUpPortal() {
         super(); // calls the constructor of the parent class (Portal)
     }
-
+   
+    Stage primaryStage = new Stage();
     @Override
     public void displayInterface() {
         System.out.println("Displaying Sign Up Portal with dimensions: " + xDimension + "x" + yDimension);
         // Implement interface display specific to SignUpPortal
+        primaryStage.setTitle("Account Creation");
+
+        // Create a grid pane and set its properties
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+
+        // Username label and text field
+        Label userNameLabel = new Label("Username:");
+        grid.add(userNameLabel, 0, 1);
+        TextField userTextField = new TextField();
+        grid.add(userTextField, 1, 1);
+
+        // Password label and password field
+        Label pwLabel = new Label("Password:");
+        grid.add(pwLabel, 0, 2);
+        PasswordField pwBox = new PasswordField();
+        grid.add(pwBox, 1, 2);
+
+        // Confirm Password label and password field
+        Label confirmPwLabel = new Label("Confirm Password:");
+        grid.add(confirmPwLabel, 0, 3);
+        PasswordField confirmPwBox = new PasswordField();
+        grid.add(confirmPwBox, 1, 3);
+
+        // Create Account button
+        Button btn = new Button("Create Account");
+        HBox hbBtn = new HBox(10);
+        hbBtn.setAlignment(Pos.BOTTOM_CENTER);
+        hbBtn.getChildren().add(btn);
+        grid.add(hbBtn, 1, 4);
+
+        // Set action on button click
+        btn.setOnAction(e -> {
+            // Implement your logic to create an account
+            System.out.println("Create account logic goes here.");
+        });
+
+        // Create scene and set it on the stage
+        Scene scene = new Scene(grid, 300, 275);
+        primaryStage.setScene(scene);
+        
+        primaryStage.show();
     }
 }
