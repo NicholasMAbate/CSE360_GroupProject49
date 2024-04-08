@@ -50,30 +50,43 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	private Database database = new Database();
+	
+	//Two primary databases that manage all users
+	private static Database HealthcareProviderDataBase = new Database();
+	private static Database PatientDatabase = new Database();
+	
+	//Getters such that databases can be accessed across totality of application
+	 public static Database getHealthcareProviderDatabase() {
+	        return HealthcareProviderDataBase;
+	    }
+
+	 public static Database getPatientDatabase() {
+	        return PatientDatabase;
+	    }
 	
     @Override
     public void start(Stage loginStage) {
-    	
         // Create LoginPortal instance and display
-        LoginPortal loginPortal = new LoginPortal(database);
+        LoginPortal loginPortal = new LoginPortal(HealthcareProviderDataBase, PatientDatabase);
         loginPortal.displayInterface();
         
-    }
-    
-    @Override
-    public void init() {
-        // Code to run before start method
-    	//loads the data from the saved .txt files into the database 
-        database.loadFromFiles();
-    }
-    
-    @Override
-    public void stop() {
-        // Code to run when the application is closing
-    	//saves all information now in database to .txt files 
-        database.saveToFiles();
-        System.out.println("Program closed");
+        //testing functionality of HealthcareProvider class and database
+        HealthcareProvider admin = new HealthcareProvider();
+    	admin.setUsername("testUsername");
+    	admin.setPassword("testPassword");
+    	admin.printAll();
+    	HealthcareProviderDataBase.addHealthcareProvider(admin);
+    	
+    	//testing functionality of Patient class and database 
+    	Patient admin2 = new Patient();
+    	admin2.setUsername("bruh");
+    	admin2.setPassword("bruh");
+    	admin2.setFirstName("herjwer");
+    	admin2.setIsSetup();
+    	admin2.printAll();
+    	PatientDatabase.addPatient(admin2);
+    	
+    	
     }
 
     public static void main(String[] args) {
@@ -81,6 +94,3 @@ public class Main extends Application {
     }
     
 }
-
-
-
