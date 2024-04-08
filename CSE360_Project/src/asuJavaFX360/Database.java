@@ -43,7 +43,7 @@ public class Database {
 		try { //prevents IO error by using try catch block
 			
 			//write HealthcareProviders to HealthcareProviders.txt
-			PrintWriter healthcareProviderWriter = new PrintWriter(new FileWriter("/Desktop/CSE360Project/HealthCareProviders.txt"));
+			PrintWriter healthcareProviderWriter = new PrintWriter(new FileWriter(System.getProperty("user.home") +"/Desktop/CSE360Project/HealthCareProviders.txt"));
 	        for (HealthcareProvider provider : Clinic49_HealthcareProviders) {
 	            healthcareProviderWriter.println(provider.getUsername() + "," +
 	                provider.getPassword() + "," +
@@ -53,7 +53,7 @@ public class Database {
 	        healthcareProviderWriter.close();
 
 			//write Patients to Patients.txt 
-	        PrintWriter patientWriter = new PrintWriter(new FileWriter("/Desktop/CSE360Project/Patients.txt"));
+	        PrintWriter patientWriter = new PrintWriter(new FileWriter(System.getProperty("user.home") + "/Desktop/CSE360Project/Patients.txt"));
 	        for (Patient patient : Clinic49_Patients) {
 	            patientWriter.println(patient.getUsername() + "," +
 	                patient.getPassword() + "," +
@@ -69,8 +69,8 @@ public class Database {
 	
     // Public Method to load data from text files
     public void loadFromFiles() {
-        loadHealthcareProvidersFromFile("/Desktop/CSE360Project/HealthCareProviders.txt");
-        loadPatientsFromFile("/Desktop/CSE360Project/Patients.txt");
+        loadHealthcareProvidersFromFile(System.getProperty("user.home") + "/Desktop/CSE360Project/HealthCareProviders.txt");
+        loadPatientsFromFile(System.getProperty("user.home") + "/Desktop/CSE360Project/Patients.txt");
     }
     
     //The following two methods are private methods called by the public method in order to load

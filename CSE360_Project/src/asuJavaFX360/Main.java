@@ -50,22 +50,30 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	private Database HealthcareProviderDataBase = new Database();
+	private Database database = new Database();
 	
     @Override
     public void start(Stage loginStage) {
+    	
         // Create LoginPortal instance and display
-        LoginPortal loginPortal = new LoginPortal(HealthcareProviderDataBase);
+        LoginPortal loginPortal = new LoginPortal(database);
         loginPortal.displayInterface();
         
-        //testing functionality of HealthcareProvider class and database
-        HealthcareProvider admin = new HealthcareProvider();
-    	admin.setUsername("testUsername");
-    	admin.setPassword("testPassword");
-    	admin.printAll();
-    	HealthcareProviderDataBase.addHealthcareProvider(admin);
-    	
-    	
+    }
+    
+    @Override
+    public void init() {
+        // Code to run before start method
+    	//loads the data from the saved .txt files into the database 
+        database.loadFromFiles();
+    }
+    
+    @Override
+    public void stop() {
+        // Code to run when the application is closing
+    	//saves all information now in database to .txt files 
+        database.saveToFiles();
+        System.out.println("Program closed");
     }
 
     public static void main(String[] args) {
