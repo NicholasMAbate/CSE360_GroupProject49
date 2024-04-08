@@ -74,9 +74,9 @@ class LoginPortal extends Portal {
     private Database database;
     private Stage loginStage;
 	
-    public LoginPortal(Database MP_database) { //MP standing for medical professional 
+    public LoginPortal(Database database) {
        super(); // calls the constructor of the parent class (Portal)
-       this.database = MP_database;
+       this.database = database;
     }
 
     @Override
