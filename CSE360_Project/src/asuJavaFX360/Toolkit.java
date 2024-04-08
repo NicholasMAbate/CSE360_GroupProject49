@@ -24,4 +24,18 @@ class accountChecker {
 		 return(database.authenticateHealthcareProvider(username, password));
 
 	}
+	
+	public boolean isValidUserLoginPatient(String username, String password, Database database) { 
+		 return(database.authenticatePatient(username, password));
+
+	}
+	
+	/*
+     * This method takes in a database, a username, and a password to determine 
+     * if the inputed account has be correctly setup. If it has then it will return true 
+     * if it has not then it will return false */
+    public boolean isSignedUp(String username, String password, Database database) {
+    	System.out.println(database.isSignedUp(username, password));
+        return(database.isSignedUp(username, password));
+    }
 }

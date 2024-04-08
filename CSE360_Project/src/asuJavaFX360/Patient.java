@@ -21,10 +21,13 @@ class Patient {
 	//private String email = null;
 	//private String medicalHistory = null;
 	//private int phoneNumber = Integer.MIN_VALUE;
-	//private boolean isSetup = false; //only turned true when all other attributes have been correctly initialized 
+	private boolean isSetup = false; //only turned true when all other attributes have been correctly initialized 
 	
-	
-	
+	public void setIsSetup() {
+		if (this.firstName != null) {
+			isSetup = true;
+		}
+	}
 	//helper methods to setup all attributes with correct information 
 	public void setFirstName(String name) { //takes in a String: name, then assigns it to the firstName 
 		this.firstName = name;
@@ -41,7 +44,6 @@ class Patient {
 	public void setPassword(String pass) {
 		this.password = pass;
 	}
-	
 	
 	//helper methods to get attributes 
 	public String getFirstName() {
@@ -60,6 +62,13 @@ class Patient {
 		return this.password;
 	}
 	
+	public boolean checkCredentials(String username, String password) {
+        return username.equals(this.username) && password.equals(this.password);
+    }
+	
+	public boolean getIsSetup() {
+		return this.isSetup;
+	}
 	
 	//further implementation required! 
 	

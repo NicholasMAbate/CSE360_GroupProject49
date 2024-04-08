@@ -27,9 +27,6 @@ class HealthcareProvider {
 		this.username = null;
 		this.password = null;
     }
-
-	
-	
 	
 	//helper methods to setup all attributes with correct information 
 		public void setFirstName(String name) { //takes in a String: name, then assigns it to the firstName 
