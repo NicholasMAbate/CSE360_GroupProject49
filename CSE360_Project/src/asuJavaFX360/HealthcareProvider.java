@@ -11,16 +11,13 @@
 
 package asuJavaFX360;
 
-import javafx.geometry.Rectangle2D;
-import javafx.stage.Screen;
-
 class HealthcareProvider {
 	//Initializing all attributes to null 
 		private String firstName;
 		private String lastName;
 		private String username;
 		private String password;
-		private char occupation;
+		
 	
 	//constructor 
 	public HealthcareProvider() {
@@ -29,7 +26,6 @@ class HealthcareProvider {
 		this.lastName = null;
 		this.username = null;
 		this.password = null;
-		occupation = '\u0000';
     }
 
 	
@@ -57,6 +53,14 @@ class HealthcareProvider {
 		}
 		public String getPassword() {
 			return this.password;
+		}
+		
+		public String getFirstName() {
+			return this.firstName;
+		}
+		
+		public String getLastName() {
+			return this.lastName;
 		}
 		
 		public boolean checkCredentials(String username, String password) {

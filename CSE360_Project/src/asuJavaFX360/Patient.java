@@ -18,10 +18,10 @@ class Patient {
 	private String lastName = null;
 	private String username = null;
 	private String password = null;
-	private String email = null;
-	private String medicalHistory = null;
-	private int phoneNumber = Integer.MIN_VALUE;
-	private boolean isSetup = false; //only turned true when all other attributes have been correctly initialized 
+	//private String email = null;
+	//private String medicalHistory = null;
+	//private int phoneNumber = Integer.MIN_VALUE;
+	//private boolean isSetup = false; //only turned true when all other attributes have been correctly initialized 
 	
 	
 	
@@ -42,6 +42,23 @@ class Patient {
 		this.password = pass;
 	}
 	
+	
+	//helper methods to get attributes 
+	public String getFirstName() {
+		return this.firstName;
+	}
+	
+	public String getLastName() {
+		return this.lastName;
+	}
+	
+	public String getUsername() {
+		return this.username;
+	}
+	
+	public String getPassword() {
+		return this.password;
+	}
 	
 	
 	//further implementation required! 
