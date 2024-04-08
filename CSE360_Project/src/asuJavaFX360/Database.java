@@ -38,6 +38,19 @@ public class Database {
 		Clinic49_Patients.add(patient);
 	}
 	
+	/* The following method will take in a patient account and check if it has been fully setup
+     * It will return a boolean after searching for the account and if it has been fully signed up. 
+     * This will allow for a new account after logging in to be correctly showed the sign-up screen */
+    
+    public boolean isSignedUp(String username, String password) {
+        for(Patient patient : Clinic49_Patients) {
+            if(patient.getUsername().equals(username) && patient.getPassword().equals(password) && (patient.getIsSetup() == true ) ) {
+                return true; //account has been set up 
+            }
+        }
+        return false; //account is not set up 
+    }
+	
 	//Method to save the database as a text file 
 	public void saveToFiles() { //When called it saves the database to the desktop of the computer system.
 		try { //prevents IO error by using try catch block
@@ -130,7 +143,7 @@ public class Database {
 		
 	public boolean authenticatePatient(String username, String password) {
 		for (Patient patient : Clinic49_Patients) {
-			if(patient.getUsername().equals(username) && patient.getPassword().equals(password) ) {
+			if(patient.getUsername().equals(username) && patient.getPassword().equals(password) && patient.getIsSetup()) {
 					return true; //match found!
 			}
 		}
