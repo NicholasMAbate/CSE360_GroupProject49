@@ -14,8 +14,6 @@ package asuJavaFX360;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -83,9 +81,23 @@ class SignUpPortal extends Portal {
     }
     
     private void signUp(String username, String password, String cPassword) {//cPassword stands for the string of the confirmed password field 
+    	
+    	//create account checker object to ensure that username has not already been taken 
+    	AccountChecker checker = new AccountChecker();
+    	boolean nameFound = checker.isExistingUsername(username, this.database);
+    	
+    	
+    	
     	//If the confirmed password does not match the password then give an error to the user
+    	if( (username.equals("")) || (password.equals("")) ) {
+    		showError("Empty Username or Password");
+    		return;
+    	}
     	if(!password.equals(cPassword)) {
     		showError("Passwords do not match");
+    	}
+    	if (nameFound) {
+    		showError("Username already in use");
     	}
     	else {
     		//If there is no error then make a new patient object and add the 
@@ -104,12 +116,9 @@ class SignUpPortal extends Portal {
     	}
     }
     
-    //THIS SHOULD BE IN TOOLKIT.JAVA 
-    private void showError(String message) { //Error system: takes in a string to display that string to user as type of error 
-    	Alert alert = new Alert(AlertType.ERROR);
-    	alert.setTitle("Error");
-    	alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    //method for making error object and displaying inputed string when called.
+    private void showError(String message) { 
+    	ErrorGenerator errorGenerator = new ErrorGenerator(message);
+    	errorGenerator.showError();
     }
 }

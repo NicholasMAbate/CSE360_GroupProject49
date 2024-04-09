@@ -1,9 +1,9 @@
 /*
  * ASU Spring 2024 CSE 360 11057
  * Authors: Haroon Radmard, Nicholas Abate, Aiden Felix, Jackson Silvey, Chirag Jagadish
- * File Version: 1.2.2
+ * File Version: 1.3.1
  * Original File Version: March 19, 2024
- * File Last Updated: March 20, 2024 
+ * File Last Updated: April 9, 2024 
  * 
  * 1. File Description
  *  This is a helper file that stores the Portal classes. The Portal classes display the different portals

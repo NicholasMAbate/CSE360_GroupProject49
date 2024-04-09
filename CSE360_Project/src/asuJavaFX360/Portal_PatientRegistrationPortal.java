@@ -1,9 +1,9 @@
 /*
  * ASU Spring 2024 CSE 360 11057
  * Authors: Haroon Radmard, Nicholas Abate, Aiden Felix, Jackson Silvey, Chirag Jagadish
- * File Version: 1.0.0
+ * File Version: 1.0.1
  * Original File Version: April 8, 2024
- * File Last Updated: April 8, 2024 
+ * File Last Updated: April 9, 2024 
  * 
  * 1. File Description
  *  NEEDED
@@ -23,6 +23,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import java.util.Random;
+import java.io.FileWriter;
+import java.io.IOException;
 
 class RegistrationPortal extends Portal {
 	private Database database;
@@ -127,7 +129,7 @@ class RegistrationPortal extends Portal {
             
             // Set the account as fully setup
             patientToUpdate.setIsSetup();
-            
+            createPatientInfoFile(formattedPatientID, firstName, lastName, DOB, pNum, emailAddress, Insurance, Pharmacy);
             
             
             LoginPortal loginPortal = new LoginPortal(database);
@@ -142,6 +144,24 @@ class RegistrationPortal extends Portal {
             alert.setContentText("Unable to find patient account. Please try again.");
             alert.showAndWait();
         }
+    }
+    
+    private void createPatientInfoFile(String patientID, String firstName, 
+    		String lastName, String DOB, String pNum, String emailAddress, String Insurance, String Pharmacy) {
+    	String filename = System.getProperty("user.home") + "/Desktop/CSE360Project/" + patientID + "_PatientInfo.txt";
+    	try(FileWriter writer = new FileWriter(filename)) {
+    		writer.write("Patient ID: " + patientID + "\n");
+            writer.write("First Name: " + firstName + "\n");
+            writer.write("Last Name: " + lastName + "\n");
+            writer.write("DOB: " + DOB + "\n");
+            writer.write("Email Address: " + emailAddress + "\n");
+            writer.write("Insurance Number: " + Insurance + "\n");
+            writer.write("Pharmacy: " + Pharmacy + "\n");
+            
+            System.out.println("Patient information file created successfully: " + filename);
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
     }
     
 }

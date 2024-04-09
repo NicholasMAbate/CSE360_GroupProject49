@@ -1,7 +1,7 @@
 /*
  * ASU Spring 2024 CSE 360 11057
  * Authors: Haroon Radmard, Nicholas Abate, Aiden Felix, Jackson Silvey, Chirag Jagadish
- * File Version: 1.0.0
+ * File Version: 1.0.3
  * Original File Version: April 8, 2024
  * File Last Updated: April 8, 2024 
  * 
@@ -94,9 +94,15 @@ class LoginPortal extends Portal {
     //Method to handle login button action MORE COMMENTS NEEDED 
     private void login(String username, String password) {
     	System.out.println("Login button clicked with username: " + username + " with password: " + password); //test line TO BE DELTED 
-    	accountChecker checker = new accountChecker();
+    	AccountChecker checker = new AccountChecker();
     	
-    	if(checker.isValidUserLoginHealthcareProvider(username, password, database)) { //check if username and password is a Healthcare account 
+    	/* First if statement checks if the given username and password link to a Health Care Provider object, the smallest 
+    	 * amount of object. Then if it is not found as a Health care provider it is checked if it is a Patient object, 
+    	 * the next smallest amount of an object. This is then checked if the patient, once discovered, has gone through
+    	 * the account registration by checking an attribute, if it has NOT gone through registration, patient it taken to
+    	 * Portal_PatientRegistrationPortal to complete. If it has already completed this then it will be logged into the 
+    	 * Portal_PatientPortal. For the biggest group of object (not an object) it will make an error for not being a discoverable object */
+    	if(checker.isValidUserLoginHealthcareProvider(username, password, database)) { //check if username and password is a Health care account 
     		HealthcareProviderPortal healthcareProviderPortal = new HealthcareProviderPortal(database);
         	healthcareProviderPortal.displayInterface();
         	this.loginStage.close();
@@ -117,8 +123,15 @@ class LoginPortal extends Portal {
     		}
     	}	
     	else {
+    		showError("Invalid Username or Password"); //display error if no account is found for given username and password
     		System.out.println("Not cool: Ur trying to log in without a valid account!");
     	}
     	
+    }
+    
+  //method for making error object and displaying inputed string when called.
+    private void showError(String message) { 
+    	ErrorGenerator errorGenerator = new ErrorGenerator(message);
+    	errorGenerator.showError();
     }
 }

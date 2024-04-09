@@ -1,18 +1,21 @@
 /*
  * ASU Spring 2024 CSE 360 11057
  * Authors: Haroon Radmard, Nicholas Abate, Aiden Felix, Jackson Silvey, Chirag Jagadish
- * File Version: 1.0.2
+ * File Version: 1.0.3
  * Original File Version: March 20, 2024
- * File Last Updated: March 20, 2024 
+ * File Last Updated: April 9, 2024 
  * 
  * 1. File Description
- *  This is a helper file that stores the HealthcareProvider class. This class (TO BE ADDED) 
+ *  This is a helper file that stores the HealthcareProvider class. This class is an object 
+ *  that represent a Health care worker for the clinic. This person could be the Doctor's who 
+ *  practice this is or it could be a Nurse, this is anyone who is allowed to edit and look at 
+ *  patient health information. 
  */
 
 package asuJavaFX360;
 
 class HealthcareProvider {
-	//Initializing all attributes to null 
+	//Attributes object should know about itself
 		private String firstName;
 		private String lastName;
 		private String username;
@@ -29,7 +32,7 @@ class HealthcareProvider {
     }
 	
 	//helper methods to setup all attributes with correct information 
-		public void setFirstName(String name) { //takes in a String: name, then assigns it to the firstName 
+		public void setFirstName(String name) { 
 			this.firstName = name;
 		}
 		
@@ -60,6 +63,7 @@ class HealthcareProvider {
 			return this.lastName;
 		}
 		
+		//might be unused CHECK BEFORE DELETED 
 		public boolean checkCredentials(String username, String password) {
 	        return username.equals(this.username) && password.equals(this.password);
 	    }

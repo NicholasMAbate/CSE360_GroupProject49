@@ -1,18 +1,18 @@
 /*
  * ASU Spring 2024 CSE 360 11057
  * Authors: Haroon Radmard, Nicholas Abate, Aiden Felix, Jackson Silvey, Chirag Jagadish
- * File Version: 1.0.1
+ * File Version: 1.0.4
  * Original File Version: March 20, 2024
- * File Last Updated: March 20, 2024 
+ * File Last Updated: April 9, 2024 
  * 
  * 1. File Description
- *  This is a helper file that allows for account storage and data storage.
- *  more information TO BE ADDED
+ *  This is a helper file that allows for account storage and data storage. This is done by 
+ *  storing the Patient objects and Health care Provider objects in their own respective array list then saving those 
+ *  array lists onto individual .txt files within the root directory: CSE360Project.
  */
 
 package asuJavaFX360;
 
-//import statements 
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
@@ -40,11 +40,10 @@ public class Database {
 	
 	/* The following method will take in a patient account and check if it has been fully setup
      * It will return a boolean after searching for the account and if it has been fully signed up. 
-     * This will allow for a new account after logging in to be correctly showed the sign-up screen */
-    
+     * This will allow for a new account after logging in to be correctly showed to the sign-up screen */
     public boolean isSignedUp(String username, String password) {
         for(Patient patient : Clinic49_Patients) {
-            if(patient.getUsername().equals(username) && patient.getPassword().equals(password) && patient.getIsSetup() ) {
+            if(patient.getUsername().equals(username) && patient.getPassword().equals(password) && (patient.getFirstName() != null)) {
                 return true; //account has been set up 
             }
         }
@@ -52,30 +51,32 @@ public class Database {
     }
 	
 	//Method to save the database as a text file 
-	public void saveToFiles() { //When called it saves the database to the desktop of the computer system.
+	public void saveToFiles() { 
 		try { //prevents IO error by using try catch block
 			
 			//write HealthcareProviders to HealthcareProviders.txt
-			PrintWriter healthcareProviderWriter = new PrintWriter(new FileWriter(System.getProperty("user.home") +"/Desktop/CSE360Project/HealthCareProviders.txt"));
-	        for (HealthcareProvider provider : Clinic49_HealthcareProviders) {
-	            healthcareProviderWriter.println(provider.getUsername() + "," +
+			PrintWriter healthcareProviderWriter = new PrintWriter
+					(new FileWriter(System.getProperty("user.home") +"/Desktop/CSE360Project/HealthCareProviders.txt"));
+	        for (HealthcareProvider provider : Clinic49_HealthcareProviders) { //writes down the username, password, first name, and last name onto file.
+	            healthcareProviderWriter.println(
+	            	provider.getUsername() + "," +
 	                provider.getPassword() + "," +
 	                provider.getFirstName() + "," +
 	                provider.getLastName());
 	        }
-	        healthcareProviderWriter.close();
+	        healthcareProviderWriter.close(); //close stream
 
 			//write Patients to Patients.txt 
 	        PrintWriter patientWriter = new PrintWriter(new FileWriter(System.getProperty("user.home") + "/Desktop/CSE360Project/Patients.txt"));
 	        for (Patient patient : Clinic49_Patients) {
-	            patientWriter.println(
+	            patientWriter.println( //writes down PatientID, username, password, first name, and last name onto file
 	            	patient.getPatientID() + "," +
 	            	patient.getUsername() + "," +
 	                patient.getPassword() + "," +
 	                patient.getFirstName() + "," +
 	                patient.getLastName());
 	        }
-	        patientWriter.close();
+	        patientWriter.close(); //close stream
 	        
 		} catch (IOException e) {//catches an IO exception :D 
 			e.printStackTrace();
@@ -91,7 +92,7 @@ public class Database {
     //The following two methods are private methods called by the public method in order to load
     //the database stored within the different .txt files 
     
-    // Load healthcare providers from HealthCareProviders.txt
+    // Load health care providers from HealthCareProviders.txt
     private void loadHealthcareProvidersFromFile(String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -130,7 +131,7 @@ public class Database {
 
 	
 	 /*The following methods verify if the inputed Username and Password from the login screen
-	 *return to a matching Healthcare Provider account or a Patient account. The both take in Strings 
+	 *return to a matching Health care Provider account or a Patient account. The both take in Strings 
 	 *of username and password then return a boolean determining if the account exists within the list. */
 	public boolean authenticateHealthcareProvider(String username, String password) {
 		for (HealthcareProvider provider : Clinic49_HealthcareProviders) {
@@ -152,13 +153,24 @@ public class Database {
 		return false; //no match
 	}
 	
+	/* This method returns a Patient object to a called username and password. This is called by the 
+	 * Patient Registration and the Patient Portal to edit Patient information.  */
 	public Patient patientToUpdate(String username, String password) {
 		for (Patient patient : Clinic49_Patients) {
             if (patient.getUsername().equals(username) && patient.getPassword().equals(password)) {
-                return patient;
+                return patient; //did find given user
             }
         }
-		return null;
+		return null; //did not find given user
+	}
+	
+	public boolean authenticateUniqueUsername(String username) {
+		for(Patient patient : Clinic49_Patients) {
+			if(patient.getUsername().equals(username)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	//TEST METHOD TO BE DELTED 

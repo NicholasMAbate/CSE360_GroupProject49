@@ -51,12 +51,12 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	
-	//Two primary databases that manage all users
+	//Database that stores file system
 	private static Database database = new Database();
 	
     @Override
     public void start(Stage loginStage) {
-        // Create LoginPortal instance and display
+        // Create frist-time LoginPortal and display it
         LoginPortal loginPortal = new LoginPortal(database);
         loginPortal.displayInterface();
         

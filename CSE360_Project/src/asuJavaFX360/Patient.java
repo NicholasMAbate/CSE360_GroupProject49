@@ -1,13 +1,15 @@
 /*
  * ASU Spring 2024 CSE 360 11057
  * Authors: Haroon Radmard, Nicholas Abate, Aiden Felix, Jackson Silvey, Chirag Jagadish
- * File Version: 1.0.2
+ * File Version: 1.0.3
  * Original File Version: March 20, 2024
- * File Last Updated: March 20, 2024 
+ * File Last Updated: April 9, 2024 
  * 
  * 1. File Description
  *  This is a helper file that stores the Patient class. The Patient class stores vital 
- *  information about the patient (TO BE ADDED)  
+ *  information about the patient for the clinic to know. The patient is the general account 
+ *  for those who are looking to use the clinic's system. The patient is only able to edit information about itself
+ *  and only able to look at information about itself.   
  */
 
 package asuJavaFX360;
@@ -29,11 +31,11 @@ class Patient {
 	
 	public void setIsSetup() {
 		if (this.firstName != null) {
-			isSetup = true;
+			isSetup = true; //if the first name is has been made then it is determined that RegistrationPortal has completed for this patient
 		}
 	}
 	//helper methods to setup all attributes with correct information 
-	public void setFirstName(String name) { //takes in a String: name, then assigns it to the firstName 
+	public void setFirstName(String name) { 
 		this.firstName = name;
 	}
 	
@@ -95,6 +97,7 @@ class Patient {
 		return this.password;
 	}
 	
+	//MIGHT NEED TO BE DELETED 
 	public boolean checkCredentials(String username, String password) {
         return username.equals(this.username) && password.equals(this.password);
     }
@@ -118,7 +121,6 @@ class Patient {
 	public String getPatientID() {
 		return this.patientID;
 	}
-	//further implementation required! 
 	
 	
 	//THE FOLLOWING IS A TEST METHOD TO BE DELETED BEFORE FINAL PRODUCT 
