@@ -95,6 +95,7 @@ class LoginPortal extends Portal {
     private void login(String username, String password) {
     	System.out.println("Login button clicked with username: " + username + " with password: " + password);
     	accountChecker checker = new accountChecker();
+    	System.out.println(database.authenticatePatient(username, password));
     	
     	if(checker.isValidUserLoginHealthcareProvider(username, password, database)) {
     		HealthcareProviderPortal healthcareProviderPortal = new HealthcareProviderPortal(database);
@@ -102,24 +103,15 @@ class LoginPortal extends Portal {
         	this.loginStage.close();
         	System.out.println("Login Screen Closed"); //test line TO BE DELETED 
     	}
-    	else if(checker.isValidUserLoginPatient(username, password, database)  && checker.isSignedUp(username, password, database)) {
+    	else if(checker.isValidUserLoginPatient(username, password, database)) {
     		PatientPortal patientPortal = new PatientPortal(database);
         	patientPortal.displayInterface();
         	this.loginStage.close();
         	System.out.println("Login Screen Closed"); //test line TO BE DELETED 
-    	}
-    	else if(checker.isValidUserLoginPatient(username, password, database)) {
-    		System.out.println("Valid Login for Patient, Setup account info!");
-    		RegistrationPortal registrationPortal = new RegistrationPortal(database);
-    		registrationPortal.displayInterface();
-    		this.loginStage.close();
-    		System.out.println("Login Screen Closed"); //test line TO BE DELETED 
-    		
-    	}
+    	}	
     	else {
-            //Implement error system
-            System.out.println("Not cool: Ur trying to log in without a valid account!");
-        }
+    		System.out.println("Not cool: Ur trying to log in without a valid account!");
+    	}
     	
     }
 }

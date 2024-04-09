@@ -44,7 +44,7 @@ public class Database {
     
     public boolean isSignedUp(String username, String password) {
         for(Patient patient : Clinic49_Patients) {
-            if(patient.getUsername().equals(username) && patient.getPassword().equals(password) && (patient.getIsSetup() == true ) ) {
+            if(patient.getUsername().equals(username) && patient.getPassword().equals(password) && patient.getIsSetup() ) {
                 return true; //account has been set up 
             }
         }
@@ -126,11 +126,9 @@ public class Database {
     }
 
 	
-	/*
-	 *The following methods verify if the inputed Username and Password from the login screen
+	 /*The following methods verify if the inputed Username and Password from the login screen
 	 *return to a matching Healthcare Provider account or a Patient account. The both take in Strings 
-	 *of username and password then return a boolean determining if the account exists within the list.  
-	 */
+	 *of username and password then return a boolean determining if the account exists within the list. */
 	public boolean authenticateHealthcareProvider(String username, String password) {
 		for (HealthcareProvider provider : Clinic49_HealthcareProviders) {
 			if(provider.getUsername().equals(username) && provider.getPassword().equals(password) ) {
@@ -143,11 +141,18 @@ public class Database {
 		
 	public boolean authenticatePatient(String username, String password) {
 		for (Patient patient : Clinic49_Patients) {
-			if(patient.getUsername().equals(username) && patient.getPassword().equals(password) && patient.getIsSetup()) {
+			if(patient.getUsername().equals(username) && patient.getPassword().equals(password)) {
 					return true; //match found!
 			}
 		}
 		
 		return false; //no match
+	}
+	
+	//TEST METHOD TO BE DELTED 
+	public void printAllUserNames() {
+		for(Patient patient : Clinic49_Patients) {
+			System.out.println(patient.getUsername());
+        }
 	}
 }

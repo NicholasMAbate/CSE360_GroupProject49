@@ -60,6 +60,19 @@ public class Main extends Application {
         LoginPortal loginPortal = new LoginPortal(database);
         loginPortal.displayInterface();
         
+        //HealthcareProvider admin = new HealthcareProvider();
+        //admin.setUsername("Uadmin");
+        //admin.setPassword("Padmin");
+        //database.addHealthcareProvider(admin);
+        
+       // Patient testPatient = new Patient();
+       // testPatient.setUsername("Tuser");
+        //testPatient.setPassword("Tuser");
+        //testPatient.setFirstName("John");
+        //testPatient.setIsSetup();
+       // database.addPatient(testPatient);
+        
+        
     }
     
     @Override

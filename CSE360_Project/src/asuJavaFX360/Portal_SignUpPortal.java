@@ -92,8 +92,9 @@ class SignUpPortal extends Portal {
     		//inputed username and password to the new object 
     		Patient newPatient = new Patient();
     		newPatient.setUsername(username);
-    		newPatient.setPassword(cPassword);
+    		newPatient.setPassword(password);
     		database.addPatient(newPatient);
+    		database.printAllUserNames();
     
     		//go back to login portal now that the account is created 
     		LoginPortal loginPortal = new LoginPortal(database);
