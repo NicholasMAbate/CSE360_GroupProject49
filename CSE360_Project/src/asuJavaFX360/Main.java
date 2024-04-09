@@ -52,41 +52,14 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	
 	//Two primary databases that manage all users
-	private static Database HealthcareProviderDataBase = new Database();
-	private static Database PatientDatabase = new Database();
-	
-	//Getters such that databases can be accessed across totality of application
-	 public static Database getHealthcareProviderDatabase() {
-	        return HealthcareProviderDataBase;
-	    }
-
-	 public static Database getPatientDatabase() {
-	        return PatientDatabase;
-	    }
+	private static Database database = new Database();
 	
     @Override
     public void start(Stage loginStage) {
         // Create LoginPortal instance and display
-        LoginPortal loginPortal = new LoginPortal(HealthcareProviderDataBase, PatientDatabase);
+        LoginPortal loginPortal = new LoginPortal(database);
         loginPortal.displayInterface();
         
-        //testing functionality of HealthcareProvider class and database
-        //HealthcareProvider admin = new HealthcareProvider();
-    	//admin.setUsername("testUsername");
-    	//admin.setPassword("testPassword");
-    	//admin.printAll();
-    	//HealthcareProviderDataBase.addHealthcareProvider(admin);
-    	
-    	//testing functionality of Patient class and database 
-    	//Patient admin2 = new Patient();
-    	//admin2.setUsername("bruh");
-    	//admin2.setPassword("bruh");
-    	//admin2.setFirstName("herjwer");
-    	//admin2.setIsSetup();
-    	//admin2.printAll();
-    	//PatientDatabase.addPatient(admin2);
-    	
-    	
     }
     
     @Override
@@ -94,8 +67,7 @@ public class Main extends Application {
     	/* Before the start of the display program is called in the previous method 
     	 * this method will load the stored file system onto the program so the programs database 
     	 * has access to all patients and health care workers */
-    	HealthcareProviderDataBase.loadFromFiles();
-    	PatientDatabase.loadFromFiles();
+    	database.loadFromFiles();
     	System.out.println("Loaded files!");
     }
     
@@ -103,8 +75,7 @@ public class Main extends Application {
     public void stop() {
     	/* The moment before the program terminates the database is saved onto the file system in order to
     	 * store all new account creations and account changes. */
-        HealthcareProviderDataBase.saveToFiles();
-        PatientDatabase.saveToFiles();
+        database.saveToFiles();
         System.out.println("Program is closed");
     }
 

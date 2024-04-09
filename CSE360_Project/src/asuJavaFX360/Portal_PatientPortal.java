@@ -29,9 +29,11 @@ import javafx.stage.Stage;
 
 class PatientPortal extends Portal {
 	private Stage patientStage;
+	private Database database;
 	
-    public PatientPortal() {
+    public PatientPortal(Database database) {
         super(); // calls the constructor of the parent class (Portal)
+        this.database = database;
     }
 
     @Override //NEEDS LOTS OF WORK, JUST INITIAL PATIENT PORTAL INTERFACE
@@ -86,7 +88,7 @@ class PatientPortal extends Portal {
         Button logoutButton = new Button("Logout?");
         logoutButton.setOnAction(event -> {
             // Assuming this switches the interface
-            LoginPortal replacement = new LoginPortal(Main.getHealthcareProviderDatabase(), Main.getPatientDatabase());
+            LoginPortal replacement = new LoginPortal(database);
             replacement.displayInterface(); // Switch interface
             patientStage.close(); // Closes the patientStage window
         });

@@ -22,14 +22,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 class LoginPortal extends Portal {
-    private Database MPdatabase;
-    private Database Pdatabase;
+    private Database database;
     private Stage loginStage;
 	
-    public LoginPortal(Database MP_database, Database P_database) { //MP standing for medical professional, P standing for patient 
+    public LoginPortal(Database database) { //MP standing for medical professional, P standing for patient 
        super(); // calls the constructor of the parent class (Portal)
-       this.MPdatabase = MP_database;
-       this.Pdatabase = P_database;
+       this.database = database;
     }
 
     @Override
@@ -58,7 +56,7 @@ class LoginPortal extends Portal {
     	Button createButton = new Button("Create New Account");
     	
     	//logic for login button action (to be implemented) 
-    	loginButton.setOnAction(event -> login(usernameField.getText(), passwordField.getText(), MPdatabase, Pdatabase));
+    	loginButton.setOnAction(event -> login(usernameField.getText(), passwordField.getText() ) );
     	
     	//logic for create account button
     	createButton.setOnAction(event -> signUp());
@@ -87,29 +85,36 @@ class LoginPortal extends Portal {
     
     //Method to handle create account button MORE COMMENTS NEEDED
     private void signUp(){
-    	SignUpPortal signupPortal = new SignUpPortal(MPdatabase, Pdatabase);
+    	SignUpPortal signupPortal = new SignUpPortal(database);
         signupPortal.displayInterface();
         this.loginStage.close();
         System.out.println("Login Screen Closed"); //test line TO BE DELETED 
     }
     
     //Method to handle login button action MORE COMMENTS NEEDED 
-    private void login(String username, String password, Database MPdatabase, Database Pdatabase) {
+    private void login(String username, String password) {
     	System.out.println("Login button clicked with username: " + username + " with password: " + password);
     	accountChecker checker = new accountChecker();
     	
-    	if(checker.isValidUserLoginHealthcareProvider(username, password, MPdatabase)) {
-    		HealthcareProviderPortal healthcareProviderPortal = new HealthcareProviderPortal();
+    	if(checker.isValidUserLoginHealthcareProvider(username, password, database)) {
+    		HealthcareProviderPortal healthcareProviderPortal = new HealthcareProviderPortal(database);
         	healthcareProviderPortal.displayInterface();
         	this.loginStage.close();
         	System.out.println("Login Screen Closed"); //test line TO BE DELETED 
     	}
-    	else if(checker.isValidUserLoginPatient(username, password, Pdatabase)  && checker.isSignedUp(username, password, Pdatabase)) {
-    		PatientPortal patientPortal = new PatientPortal();
+    	else if(checker.isValidUserLoginPatient(username, password, database)  && checker.isSignedUp(username, password, database)) {
+    		PatientPortal patientPortal = new PatientPortal(database);
         	patientPortal.displayInterface();
-        	System.out.println("Patient Portal Displayed");
         	this.loginStage.close();
         	System.out.println("Login Screen Closed"); //test line TO BE DELETED 
+    	}
+    	else if(checker.isValidUserLoginPatient(username, password, database)) {
+    		System.out.println("Valid Login for Patient, Setup account info!");
+    		RegistrationPortal registrationPortal = new RegistrationPortal(database);
+    		registrationPortal.displayInterface();
+    		this.loginStage.close();
+    		System.out.println("Login Screen Closed"); //test line TO BE DELETED 
+    		
     	}
     	else {
             //Implement error system

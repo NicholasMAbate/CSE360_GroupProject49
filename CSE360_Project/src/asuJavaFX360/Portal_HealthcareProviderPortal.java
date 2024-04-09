@@ -19,8 +19,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 class HealthcareProviderPortal extends Portal {
-    public HealthcareProviderPortal() {
+	private Database database;
+	
+    public HealthcareProviderPortal(Database database) {
         super(); // calls the constructor of the parent class (Portal)
+        this.database = database;
     }
 
     @Override

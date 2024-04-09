@@ -14,25 +14,23 @@ package asuJavaFX360;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 class SignUpPortal extends Portal {
-	private Database MPdatabase;
-    private Database Pdatabase;
+	private Database database;
     private Stage signUpStage;
 	
-    public SignUpPortal(Database MP_database, Database P_database) { //MP standing for medical professional, P standing for patient) {
+    public SignUpPortal(Database database) { //MP standing for medical professional, P standing for patient) {
         super(); // calls the constructor of the parent class (Portal)
-        this.MPdatabase = MP_database;
-        this.Pdatabase = P_database;
+        this.database = database;
     }
    
     @Override
@@ -76,7 +74,7 @@ class SignUpPortal extends Portal {
         grid.add(hbBtn, 1, 4);
 
         // Set action on button click
-        btn.setOnAction(e -> signUp(username, password, cpassword)); //to be implemented further
+        btn.setOnAction(e -> signUp(userTextField.getText(), pwBox.getText(), confirmPwBox.getText() ) );
 
         // Create scene and set it on the stage
         Scene scene = new Scene(grid, this.xDimension, this.yDimension);
@@ -85,6 +83,32 @@ class SignUpPortal extends Portal {
     }
     
     private void signUp(String username, String password, String cPassword) {//cPassword stands for the string of the confirmed password field 
-    	
+    	//If the confirmed password does not match the password then give an error to the user
+    	if(!password.equals(cPassword)) {
+    		showError("Passwords do not match");
+    	}
+    	else {
+    		//If there is no error then make a new patient object and add the 
+    		//inputed username and password to the new object 
+    		Patient newPatient = new Patient();
+    		newPatient.setUsername(username);
+    		newPatient.setPassword(cPassword);
+    		database.addPatient(newPatient);
+    
+    		//go back to login portal now that the account is created 
+    		LoginPortal loginPortal = new LoginPortal(database);
+    		loginPortal.displayInterface();
+    		this.signUpStage.close();
+    		System.out.println("SignUp Portal Closed");
+    	}
+    }
+    
+    //THIS SHOULD BE IN TOOLKIT.JAVA 
+    private void showError(String message) { //Error system: takes in a string to display that string to user as type of error 
+    	Alert alert = new Alert(AlertType.ERROR);
+    	alert.setTitle("Error");
+    	alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
