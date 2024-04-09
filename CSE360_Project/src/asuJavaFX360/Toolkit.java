@@ -35,7 +35,7 @@ class accountChecker {
      * if the inputed account has be correctly setup. If it has then it will return true 
      * if it has not then it will return false */
     public boolean isSignedUp(String username, String password, Database database) {
-    	System.out.println(database.isSignedUp(username, password));
+    	System.out.println(database.isSignedUp(username, password));//test line TO BE DELETED 
         return(database.isSignedUp(username, password));
     }
 }

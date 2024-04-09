@@ -18,9 +18,13 @@ class Patient {
 	private String lastName = null;
 	private String username = null;
 	private String password = null;
+	private String patientID = null;
 	private String email = null;
 	private String medicalHistory = null;
 	private String phoneNumber = null;
+	private String DOB = null;
+	private String InsuranceID = null;
+	private String Pharmacy = null;
 	private boolean isSetup = false; //only turned true when all other attributes have been correctly initialized 
 	
 	public void setIsSetup() {
@@ -56,6 +60,23 @@ class Patient {
 	public void setPhoneNumber(String pNum) {
 		this.phoneNumber = pNum;
 	}
+	
+	public void setDOB(String dob) {
+		this.DOB = dob;
+	}
+	
+	public void setInsuranceID(String ID) {
+		this.InsuranceID = ID;
+	}
+	
+	public void setPharmacy(String pharmacy) {
+		this.Pharmacy = pharmacy;
+	}
+	
+	public void setPatientID(String id) {
+		this.patientID = id;
+	}
+	
 	
 	//helper methods to get attributes 
 	public String getFirstName() {
@@ -93,6 +114,10 @@ class Patient {
 	public String getMedicalHistory() {
 		return this.medicalHistory;
 	}
+	
+	public String getPatientID() {
+		return this.patientID;
+	}
 	//further implementation required! 
 	
 	
@@ -102,7 +127,6 @@ class Patient {
 		System.out.println(this.lastName);
 		System.out.println(this.username);
 		System.out.println(this.password);
-		
 	}
 	
 }

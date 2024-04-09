@@ -93,21 +93,28 @@ class LoginPortal extends Portal {
     
     //Method to handle login button action MORE COMMENTS NEEDED 
     private void login(String username, String password) {
-    	System.out.println("Login button clicked with username: " + username + " with password: " + password);
+    	System.out.println("Login button clicked with username: " + username + " with password: " + password); //test line TO BE DELTED 
     	accountChecker checker = new accountChecker();
-    	System.out.println(database.authenticatePatient(username, password));
     	
-    	if(checker.isValidUserLoginHealthcareProvider(username, password, database)) {
+    	if(checker.isValidUserLoginHealthcareProvider(username, password, database)) { //check if username and password is a Healthcare account 
     		HealthcareProviderPortal healthcareProviderPortal = new HealthcareProviderPortal(database);
         	healthcareProviderPortal.displayInterface();
         	this.loginStage.close();
         	System.out.println("Login Screen Closed"); //test line TO BE DELETED 
     	}
-    	else if(checker.isValidUserLoginPatient(username, password, database)) {
-    		PatientPortal patientPortal = new PatientPortal(database);
-        	patientPortal.displayInterface();
-        	this.loginStage.close();
-        	System.out.println("Login Screen Closed"); //test line TO BE DELETED 
+    	else if(checker.isValidUserLoginPatient(username, password, database)) { //check if username and password is a Patient account 
+    		if(checker.isSignedUp(username, password, database) ) {
+    			PatientPortal patientPortal = new PatientPortal(database);
+            	patientPortal.displayInterface();
+            	this.loginStage.close();
+            	System.out.println("Login Screen Closed"); //test line TO BE DELETED 
+    		}
+    		else {
+    			RegistrationPortal registrationPortal = new RegistrationPortal(database, username, password);
+    			registrationPortal.displayInterface();
+    			this.loginStage.close();
+    			System.out.println("Login Screen Closed"); //test line TO BE DELETED 
+    		}
     	}	
     	else {
     		System.out.println("Not cool: Ur trying to log in without a valid account!");

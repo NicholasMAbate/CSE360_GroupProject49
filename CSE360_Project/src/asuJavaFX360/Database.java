@@ -68,7 +68,9 @@ public class Database {
 			//write Patients to Patients.txt 
 	        PrintWriter patientWriter = new PrintWriter(new FileWriter(System.getProperty("user.home") + "/Desktop/CSE360Project/Patients.txt"));
 	        for (Patient patient : Clinic49_Patients) {
-	            patientWriter.println(patient.getUsername() + "," +
+	            patientWriter.println(
+	            	patient.getPatientID() + "," +
+	            	patient.getUsername() + "," +
 	                patient.getPassword() + "," +
 	                patient.getFirstName() + "," +
 	                patient.getLastName());
@@ -114,10 +116,11 @@ public class Database {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 Patient patient = new Patient();
-                patient.setUsername(parts[0]);
-                patient.setPassword(parts[1]);
-                patient.setFirstName(parts[2]);
-                patient.setLastName(parts[3]);
+                patient.setPatientID(parts[0]);
+                patient.setUsername(parts[1]);
+                patient.setPassword(parts[2]);
+                patient.setFirstName(parts[3]);
+                patient.setLastName(parts[4]);
                 Clinic49_Patients.add(patient);
             }
         } catch (IOException e) {
@@ -147,6 +150,15 @@ public class Database {
 		}
 		
 		return false; //no match
+	}
+	
+	public Patient patientToUpdate(String username, String password) {
+		for (Patient patient : Clinic49_Patients) {
+            if (patient.getUsername().equals(username) && patient.getPassword().equals(password)) {
+                return patient;
+            }
+        }
+		return null;
 	}
 	
 	//TEST METHOD TO BE DELTED 
