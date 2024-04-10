@@ -16,6 +16,7 @@ package asuJavaFX360;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -28,8 +29,10 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 class HealthcareProviderPortal extends Portal {
+	
     private Database database;
     private Stage stage = new Stage();
+    private Patient patient;
 
     public HealthcareProviderPortal(Database database) {
         super(); // calls the constructor of the parent class (Portal)
@@ -65,22 +68,53 @@ class HealthcareProviderPortal extends Portal {
         centerPanel.setHgap(10);
 
         // Patient Information
+     // First and Last Name
+        TextField nameField = new TextField();
+        nameField.setEditable(false); 
         centerPanel.add(new Label("First and Last Name"), 0, 1);
-        centerPanel.add(new TextField(), 1, 1);
+        centerPanel.add(nameField, 1, 1);
+
+        // Patient Age
+        TextField ageField = new TextField();
+        ageField.setEditable(false);
         centerPanel.add(new Label("Patient Age"), 0, 2);
-        centerPanel.add(new TextField(), 1, 2);
+        centerPanel.add(ageField, 1, 2);
+
+        // Patient Address
+        TextField addressField = new TextField();
+        addressField.setEditable(false);
         centerPanel.add(new Label("Patient Address"), 0, 3);
-        centerPanel.add(new TextField(), 1, 3);
+        centerPanel.add(addressField, 1, 3);
+
+        // Patient DOB
+        TextField dobField = new TextField();
+        dobField.setEditable(false);
         centerPanel.add(new Label("Patient DOB"), 0, 4);
-        centerPanel.add(new TextField(), 1, 4);
+        centerPanel.add(dobField, 1, 4);
+
+        // Patient Phone
+        TextField phoneField = new TextField();
+        phoneField.setEditable(false);
         centerPanel.add(new Label("Patient Phone"), 0, 5);
-        centerPanel.add(new TextField(), 1, 5);
+        centerPanel.add(phoneField, 1, 5);
+
+        // Patient Email
+        TextField emailField = new TextField();
+        emailField.setEditable(false);
         centerPanel.add(new Label("Patient Email"), 0, 6);
-        centerPanel.add(new TextField(), 1, 6);
+        centerPanel.add(emailField, 1, 6);
+
+        // Patient Insurance ID
+        TextField insuranceIDField = new TextField();
+        insuranceIDField.setEditable(false);
         centerPanel.add(new Label("Patient Insurance ID"), 0, 7);
-        centerPanel.add(new TextField(), 1, 7);
+        centerPanel.add(insuranceIDField, 1, 7);
+
+        // Preferred Pharmacy
+        TextField pharmacyField = new TextField();
+        pharmacyField.setEditable(false);
         centerPanel.add(new Label("Preferred Pharmacy"), 0, 8);
-        centerPanel.add(new TextField(), 1, 8);
+        centerPanel.add(pharmacyField, 1, 8);
 
         // Patient History
         centerPanel.add(new Label("Patient Health History Questionnaire"), 2, 1, 2, 1);
@@ -116,6 +150,27 @@ class HealthcareProviderPortal extends Portal {
         HBox bottomPanel = new HBox(saveButton);
         bottomPanel.setAlignment(Pos.CENTER_RIGHT);
         bottomPanel.setPadding(new Insets(10));
+        
+        //THIS WILL UPDATE ALL ABOVE FIELDS AFTER SEARCHING
+        searchButton.setOnAction(event -> {
+        	patient = database.getPatientByFirstAndLast(searchField.getText());
+            if (patient != null) {
+                nameField.setText(patient.getFullName());
+                ageField.setText(Integer.toString(patient.getAge()));
+                addressField.setText(patient.getAddress());
+                emailField.setText(patient.getEmail());
+                dobField.setText(patient.getDOB());
+                phoneField.setText(patient.getPhoneNumber());
+                insuranceIDField.setText(patient.getInsuranceID());
+                pharmacyField.setText(patient.getPharmacy());
+            } else {
+            	Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Search Error");
+                alert.setHeaderText(null); // No header text
+                alert.setContentText("No patient found with the provided name. Please try again.");
+                alert.showAndWait();
+            }
+        });
 
         // Assemble the main layout
         root.setTop(searchBox);

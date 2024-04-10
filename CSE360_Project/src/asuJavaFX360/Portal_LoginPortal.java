@@ -146,7 +146,7 @@ class LoginPortal extends Portal {
             // Check if the patient has completed the account registration process
             if (checker.isSignedUp(username, password, database)) {
                 // Initialize a PatientPortal instance for patient access
-                PatientPortal patientPortal = new PatientPortal(database);
+                PatientPortal patientPortal = new PatientPortal(database, username);
                 
                 // Display the interface of the PatientPortal
                 patientPortal.displayInterface();
