@@ -5,8 +5,12 @@
  * Original File Version: April 8, 2024
  * File Last Updated: April 9, 2024 
  * 
- * 1. File Description
- *  NEEDED
+ * 1. File Description:
+ *   This class, `RegistrationPortal`, facilitates the registration process for new users within the system. It allows 
+ *   users to input various personal details required for registration, such as their first name, last name, date of birth,
+ *   phone number, email address, insurance ID, and preferred pharmacy. Upon confirmation of the provided details, the class
+ *   updates the user's information in the database if the user account is found. It also generates a unique patient ID for the
+ *   user and creates a text file containing the user's information.
  */
 
 package asuJavaFX360;
@@ -93,10 +97,26 @@ class RegistrationPortal extends Portal {
         HBox confirmButtonBox = new HBox(10);
         confirmButtonBox.setAlignment(Pos.CENTER);
         confirmButtonBox.getChildren().add(confirmButton);
-        grid.add(confirmButtonBox, 0, 7, 2, 1);
+        grid.add(confirmButtonBox, 1, 7);
         confirmButton.setOnAction(event -> confirmed(firstNameField.getText(), lastNameField.getText(), 
         		dobField.getText(), phoneNumberField.getText(), emailField.getText(), 
         		insuranceIdField.getText(), pharmacyField.getText() ));
+        
+     // Back button
+        Button backBtn = new Button("Back");
+        HBox backBtnBox = new HBox(10);
+        backBtnBox.setAlignment(Pos.BOTTOM_CENTER);
+        backBtnBox.getChildren().add(backBtn);
+        grid.add(backBtnBox, 1, 8);
+        
+        // Set action on "Back" button click
+        backBtn.setOnAction(e -> {
+            // Navigate back to the login portal
+            LoginPortal loginPortal = new LoginPortal(database);
+            loginPortal.displayInterface();
+            registrationStage.close();
+            System.out.println("Sign Up Portal Closed");
+        });
 
         // Create scene and set it on the stage
         Scene scene = new Scene(grid, this.xDimension, this.yDimension);
@@ -105,8 +125,46 @@ class RegistrationPortal extends Portal {
     }
     
     private void confirmed(String firstName, String lastName, String DOB, String pNum, String emailAddress, String Insurance, String Pharmacy) {
+    	
+    	// Check if any field exceeds 15 characters
+        if (firstName.length() > 15 || lastName.length() > 15 || DOB.length() > 15 || pNum.length() > 15 || Insurance.length() > 15 || Pharmacy.length() > 15) {
+            showError("All fields must be less than 15 characters Except Email Address.");
+            return;
+        }
+    	
+    	if (firstName.isEmpty() || lastName.isEmpty() || DOB.isEmpty() || pNum.isEmpty() || emailAddress.isEmpty() || Insurance.isEmpty() || Pharmacy.isEmpty()) {
+            showError("Please fill in all fields.");
+            return;
+        }
+
+        // Check if first name and last name contain only alphabets
+        if (!firstName.matches("[a-zA-Z]+") || !lastName.matches("[a-zA-Z]+")) {
+            showError("First name and last name must contain only alphabets.");
+            return;
+        }
+
+        // Check if DOB contains numbers and is separated by "/"
+        if (!DOB.matches("\\d{2}/\\d{2}/\\d{4}")) {
+            showError("Please enter DOB in the format mm/dd/yyyy.");
+            return;
+        }
+
+        // Check if phone number contains only numbers
+        if (!pNum.matches("\\d{3}-\\d{3}-\\d{4}")) {
+            showError("Please enter phone number in the format XXX-XXX-XXXX.");
+            return;
+        }
+
+        // Check if email ends with ".com"
+        if (!emailAddress.endsWith(".com")) {
+            showError("Please enter a valid email address ending with '.com'.");
+            return;
+        }
+        
     	// Find the patient in the database based on the provided username and password
         Patient patientToUpdate = database.patientToUpdate(username, password);
+        
+        
         
         
      // Update patient's details if found
@@ -131,7 +189,7 @@ class RegistrationPortal extends Portal {
             patientToUpdate.setIsSetup();
             createPatientInfoFile(formattedPatientID, firstName, lastName, DOB, pNum, emailAddress, Insurance, Pharmacy);
             
-            
+            // Go back to Login Portal 
             LoginPortal loginPortal = new LoginPortal(database);
             loginPortal.displayInterface();
             registrationStage.close();
@@ -148,7 +206,9 @@ class RegistrationPortal extends Portal {
     
     private void createPatientInfoFile(String patientID, String firstName, 
     		String lastName, String DOB, String pNum, String emailAddress, String Insurance, String Pharmacy) {
+    	// Construct the file name based on patient ID
     	String filename = System.getProperty("user.home") + "/Desktop/CSE360Project/" + patientID + "_PatientInfo.txt";
+    	 // Attempt to create the file and write patient information
     	try(FileWriter writer = new FileWriter(filename)) {
     		writer.write("Patient ID: " + patientID + "\n");
             writer.write("First Name: " + firstName + "\n");
@@ -158,10 +218,17 @@ class RegistrationPortal extends Portal {
             writer.write("Insurance Number: " + Insurance + "\n");
             writer.write("Pharmacy: " + Pharmacy + "\n");
             
-            System.out.println("Patient information file created successfully: " + filename);
+            System.out.println("Patient information file created successfully: " + filename); // error checking DELETE before final submission 
+            
+            // Handle any errors that occur during file creation
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
+    }
+    //method for making error object and displaying inputed string when called.
+    private void showError(String message) { 
+    	ErrorGenerator errorGenerator = new ErrorGenerator(message);
+    	errorGenerator.showError();
     }
     
 }
