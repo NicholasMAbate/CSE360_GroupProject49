@@ -13,20 +13,27 @@
 
 package asuJavaFX360;
 
-//import the javaFX that is used 
+// Import necessary JavaFX libraries
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
+// Abstract class representing a Portal
 abstract class Portal {
+    // Dimensions of the portal window
     protected int xDimension;
     protected int yDimension;
 
+    // Constructor to initialize the dimensions based on the screen size
     public Portal() {
-    	Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        // Get the primary screen's bounds
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+        // Set the dimensions of the portal window to match the screen size
         this.xDimension = (int) screenBounds.getWidth();
         this.yDimension = (int) screenBounds.getHeight();
     }
 
+    // Abstract method to display the interface of the portal
     public abstract void displayInterface();
-    
 }
+
