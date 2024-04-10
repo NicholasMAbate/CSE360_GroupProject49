@@ -5,8 +5,14 @@
  * Original File Version: April 8, 2024
  * File Last Updated: April 8, 2024 
  * 
- * 1. File Description
- *  NEEDED
+ * 1. File Description:
+ 
+ * This is a file that stores The LoginPortal class which represents a user interface for logging into a system. 
+ * It provides functionality for users to input their username and password, 
+ * login, or create a new account if none exists.
+ * This class extends the Portal class, inheriting basic portal functionalities.
+ * Upon instantiation, a LoginPortal object requires a Database object to interact 
+ * with the system's database.
  */
 
 package asuJavaFX360;
@@ -55,8 +61,20 @@ class LoginPortal extends Portal {
     	//new account button if account doesn't exist
     	Button createButton = new Button("Create New Account");
     	
-    	//logic for login button action (to be implemented) 
-    	loginButton.setOnAction(event -> login(usernameField.getText(), passwordField.getText() ) );
+    	   // Logic for login button action
+        loginButton.setOnAction(event -> {
+            // Validate username and password
+            String username = usernameField.getText().trim();
+            String password = passwordField.getText().trim();
+            
+            if (username.isEmpty() || password.isEmpty()) {
+                showError("Username and password cannot be empty.");
+            } else if (!username.matches("^[a-zA-Z].*")) {
+                showError("Username must start with an alphabet.");
+            } else {
+                login(username, password);
+            }
+        });
     	
     	//logic for create account button
     	createButton.setOnAction(event -> signUp());
@@ -83,7 +101,11 @@ class LoginPortal extends Portal {
     	this.loginStage.show();
     }
     
-    //Method to handle create account button MORE COMMENTS NEEDED
+    /*
+     * Handles the action when the user clicks on the create account button.
+     * It initializes a SignUpPortal instance and displays its interface, allowing 
+     * the user to create a new account by providing necessary information.
+     */ 
     private void signUp(){
     	SignUpPortal signupPortal = new SignUpPortal(database);
         signupPortal.displayInterface();
@@ -91,42 +113,69 @@ class LoginPortal extends Portal {
         System.out.println("Login Screen Closed"); //test line TO BE DELETED 
     }
     
-    //Method to handle login button action MORE COMMENTS NEEDED 
+    /**
+     * Handles the action when the user attempts to log in with the provided username and password.
+     * Upon receiving the username and password, this method checks if the credentials correspond 
+     * to a healthcare provider account, a patient account, or none. It then directs the user to 
+     * the appropriate portal based on their account type or displays an error message if no account 
+     * is found for the given credentials.
+     */
+    
     private void login(String username, String password) {
     	System.out.println("Login button clicked with username: " + username + " with password: " + password); //test line TO BE DELTED 
     	AccountChecker checker = new AccountChecker();
     	
-    	/* First if statement checks if the given username and password link to a Health Care Provider object, the smallest 
-    	 * amount of object. Then if it is not found as a Health care provider it is checked if it is a Patient object, 
-    	 * the next smallest amount of an object. This is then checked if the patient, once discovered, has gone through
-    	 * the account registration by checking an attribute, if it has NOT gone through registration, patient it taken to
-    	 * Portal_PatientRegistrationPortal to complete. If it has already completed this then it will be logged into the 
-    	 * Portal_PatientPortal. For the biggest group of object (not an object) it will make an error for not being a discoverable object */
-    	if(checker.isValidUserLoginHealthcareProvider(username, password, database)) { //check if username and password is a Health care account 
-    		HealthcareProviderPortal healthcareProviderPortal = new HealthcareProviderPortal(database);
-        	healthcareProviderPortal.displayInterface();
-        	this.loginStage.close();
-        	System.out.println("Login Screen Closed"); //test line TO BE DELETED 
-    	}
-    	else if(checker.isValidUserLoginPatient(username, password, database)) { //check if username and password is a Patient account 
-    		if(checker.isSignedUp(username, password, database) ) {
-    			PatientPortal patientPortal = new PatientPortal(database);
-            	patientPortal.displayInterface();
-            	this.loginStage.close();
-            	System.out.println("Login Screen Closed"); //test line TO BE DELETED 
-    		}
-    		else {
-    			RegistrationPortal registrationPortal = new RegistrationPortal(database, username, password);
-    			registrationPortal.displayInterface();
-    			this.loginStage.close();
-    			System.out.println("Login Screen Closed"); //test line TO BE DELETED 
-    		}
-    	}	
-    	else {
-    		showError("Invalid Username or Password"); //display error if no account is found for given username and password
-    		System.out.println("Not cool: Ur trying to log in without a valid account!");
-    	}
-    	
+
+    	// Check if the username and password correspond to a healthcare provider account
+        if (checker.isValidUserLoginHealthcareProvider(username, password, database)) {
+            // Initialize a HealthcareProviderPortal instance for healthcare provider access
+            HealthcareProviderPortal healthcareProviderPortal = new HealthcareProviderPortal(database);
+            
+            // Display the interface of the HealthcareProviderPortal
+            healthcareProviderPortal.displayInterface();
+            
+            // Close the login stage after successful login
+            this.loginStage.close();
+            
+          //test line TO BE DELETED 
+            System.out.println("Login Screen Closed");
+        }
+        // Check if the username and password correspond to a patient account 
+         
+        else if (checker.isValidUserLoginPatient(username, password, database)) {
+            // Check if the patient has completed the account registration process
+            if (checker.isSignedUp(username, password, database)) {
+                // Initialize a PatientPortal instance for patient access
+                PatientPortal patientPortal = new PatientPortal(database);
+                
+                // Display the interface of the PatientPortal
+                patientPortal.displayInterface();
+                
+                // Close the login stage after successful login
+                this.loginStage.close();
+                
+              //test line TO BE DELETED 
+                System.out.println("Login Screen Closed");
+            } else { //if it has NOT gone through registration, patient it taken to Portal_PatientRegistrationPortal to complete
+                // Initialize a RegistrationPortal instance for account registration
+                RegistrationPortal registrationPortal = new RegistrationPortal(database, username, password);
+                
+                // Display the interface of the RegistrationPortal for account registration
+                registrationPortal.displayInterface();
+                
+                // Close the login stage after transitioning to the registration portal
+                this.loginStage.close();
+                
+              //test line TO BE DELETED 
+                System.out.println("Login Screen Closed");
+            }
+        } else {
+            // Display an error message indicating invalid username or password
+            showError("Invalid Username or Password");
+            
+          //test line TO BE DELETED 
+            System.out.println("Not cool: You're trying to log in without a valid account!");
+        }
     }
     
   //method for making error object and displaying inputed string when called.
