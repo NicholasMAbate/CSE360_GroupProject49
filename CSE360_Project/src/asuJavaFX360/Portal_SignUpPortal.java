@@ -5,8 +5,11 @@
  * Original File Version: April 8, 2024
  * File Last Updated: April 8, 2024 
  * 
- * 1. File Description
- *  NEEDED
+ * 1. File Description:
+ * The SignUpPortal class represents a user interface for creating a new account in the system.
+ * This class extends the Portal class, inheriting basic portal functionalities.
+ * Upon instantiation, a SignUpPortal object requires a Database object to interact 
+ * with the system's database.
  */
 
 package asuJavaFX360;
@@ -70,9 +73,46 @@ class SignUpPortal extends Portal {
         hbBtn.setAlignment(Pos.BOTTOM_CENTER);
         hbBtn.getChildren().add(btn);
         grid.add(hbBtn, 1, 4);
+        
+     // Back button
+        Button backBtn = new Button("Back");
+        HBox backBtnBox = new HBox(10);
+        backBtnBox.setAlignment(Pos.BOTTOM_CENTER);
+        backBtnBox.getChildren().add(backBtn);
+        grid.add(backBtnBox, 1, 5);
 
-        // Set action on button click
-        btn.setOnAction(e -> signUp(userTextField.getText(), pwBox.getText(), confirmPwBox.getText() ) );
+        // Set action on button click and Add validation for username, password, and confirm password fields
+        btn.setOnAction(e -> {
+            String username = userTextField.getText().trim();
+            String password = pwBox.getText().trim();
+            String confirmPassword = confirmPwBox.getText().trim();
+            
+            if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                showError("Please fill in all fields.");
+            } else if (username.length() > 10) {
+                showError("Username cannot be more than 10 characters.");
+            } else if (!username.matches("^[a-zA-Z].*")) {
+                showError("Username must start with an alphabet.");
+            } else if (password.length() < 8 || password.length() > 15) {
+                showError("Password must be between 8 and 15 characters long.");
+            } else if (!password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*")) {
+                showError("Password must contain at least one special character.");
+            } else if (!password.equals(confirmPassword)) {
+                showError("Passwords do not match.");
+            } else {
+                signUp(username, password, confirmPassword);
+            }
+        });
+
+
+     // Set action on "Back" button click
+        backBtn.setOnAction(e -> {
+            // Navigate back to the login portal
+            LoginPortal loginPortal = new LoginPortal(database);
+            loginPortal.displayInterface();
+            signUpStage.close();
+            System.out.println("Sign Up Portal Closed");
+        });
 
         // Create scene and set it on the stage
         Scene scene = new Scene(grid, this.xDimension, this.yDimension);
@@ -86,16 +126,6 @@ class SignUpPortal extends Portal {
     	AccountChecker checker = new AccountChecker();
     	boolean nameFound = checker.isExistingUsername(username, this.database);
     	
-    	
-    	
-    	//If the confirmed password does not match the password then give an error to the user
-    	if( (username.equals("")) || (password.equals("")) ) {
-    		showError("Empty Username or Password");
-    		return;
-    	}
-    	if(!password.equals(cPassword)) {
-    		showError("Passwords do not match");
-    	}
     	if (nameFound) {
     		showError("Username already in use");
     	}
