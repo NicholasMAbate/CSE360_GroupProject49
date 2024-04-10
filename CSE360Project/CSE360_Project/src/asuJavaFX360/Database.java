@@ -1,18 +1,18 @@
 /*
  * ASU Spring 2024 CSE 360 11057
  * Authors: Haroon Radmard, Nicholas Abate, Aiden Felix, Jackson Silvey, Chirag Jagadish
- * File Version: 1.0.1
+ * File Version: 1.0.4
  * Original File Version: March 20, 2024
- * File Last Updated: March 20, 2024 
+ * File Last Updated: April 9, 2024 
  * 
  * 1. File Description
- *  This is a helper file that allows for account storage and data storage.
- *  more information TO BE ADDED
+ *  This is a helper file that allows for account storage and data storage. This is done by 
+ *  storing the Patient objects and Health care Provider objects in their own respective array list then saving those 
+ *  array lists onto individual .txt files within the root directory: CSE360Project.
  */
 
 package asuJavaFX360;
 
-//import statements 
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
@@ -38,42 +38,61 @@ public class Database {
 		Clinic49_Patients.add(patient);
 	}
 	
+	/* The following method will take in a patient account and check if it has been fully setup
+     * It will return a boolean after searching for the account and if it has been fully signed up. 
+     * This will allow for a new account after logging in to be correctly showed to the sign-up screen */
+    public boolean isSignedUp(String username, String password) {
+        for(Patient patient : Clinic49_Patients) {
+            if(patient.getUsername().equals(username) && patient.getPassword().equals(password) && (patient.getFirstName() != null)) {
+                return true; //account has been set up 
+            }
+        }
+        return false; //account is not set up 
+    }
+	
 	//Method to save the database as a text file 
-	public void saveToFiles() { //When called it saves the database to the desktop of the computer system.
+	public void saveToFiles() { 
 		try { //prevents IO error by using try catch block
 			
 			//write HealthcareProviders to HealthcareProviders.txt
-			PrintWriter healthcareProviderWriter = new PrintWriter(new FileWriter("/Desktop/CSE360Project/HealthCareProviders.txt"));
-	        for (HealthcareProvider provider : Clinic49_HealthcareProviders) {
-	            healthcareProviderWriter.println(provider.getUsername() + "," +
+			PrintWriter healthcareProviderWriter = new PrintWriter
+					(new FileWriter(System.getProperty("user.home") +"/Desktop/CSE360Project/HealthCareProviders.txt"));
+	        for (HealthcareProvider provider : Clinic49_HealthcareProviders) { //writes down the username, password, first name, and last name onto file.
+	            healthcareProviderWriter.println(
+	            	provider.getUsername() + "," +
 	                provider.getPassword() + "," +
 	                provider.getFirstName() + "," +
 	                provider.getLastName());
 	        }
-	        healthcareProviderWriter.close();
+	        healthcareProviderWriter.close(); //close stream
 
 			//write Patients to Patients.txt 
-	        PrintWriter patientWriter = new PrintWriter(new FileWriter("/Desktop/CSE360Project/Patients.txt"));
+	        PrintWriter patientWriter = new PrintWriter(new FileWriter(System.getProperty("user.home") + "/Desktop/CSE360Project/Patients.txt"));
 	        for (Patient patient : Clinic49_Patients) {
-	            patientWriter.println(patient.getUsername() + "," +
+	            patientWriter.println( //writes down PatientID, username, password, first name, and last name onto file
+	            	patient.getPatientID() + "," +
+	            	patient.getUsername() + "," +
 	                patient.getPassword() + "," +
 	                patient.getFirstName() + "," +
 	                patient.getLastName());
 	        }
-	        patientWriter.close();
+	        patientWriter.close(); //close stream
 	        
 		} catch (IOException e) {//catches an IO exception :D 
 			e.printStackTrace();
 		}
 	}
 	
-    // Public Methods to load data from text files
+    // Public Method to load data from text files
     public void loadFromFiles() {
-        loadHealthcareProvidersFromFile("/Desktop/CSE360Project/HealthCareProviders.txt");
-        loadPatientsFromFile("/Desktop/CSE360Project/Patients.txt");
+        loadHealthcareProvidersFromFile(System.getProperty("user.home") + "/Desktop/CSE360Project/HealthCareProviders.txt");
+        loadPatientsFromFile(System.getProperty("user.home") + "/Desktop/CSE360Project/Patients.txt");
     }
     
-    // Load healthcare providers from HealthCareProviders.txt
+    //The following two methods are private methods called by the public method in order to load
+    //the database stored within the different .txt files 
+    
+    // Load health care providers from HealthCareProviders.txt
     private void loadHealthcareProvidersFromFile(String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
@@ -98,10 +117,11 @@ public class Database {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 Patient patient = new Patient();
-                patient.setUsername(parts[0]);
-                patient.setPassword(parts[1]);
-                patient.setFirstName(parts[2]);
-                patient.setLastName(parts[3]);
+                patient.setPatientID(parts[0]);
+                patient.setUsername(parts[1]);
+                patient.setPassword(parts[2]);
+                patient.setFirstName(parts[3]);
+                patient.setLastName(parts[4]);
                 Clinic49_Patients.add(patient);
             }
         } catch (IOException e) {
@@ -110,11 +130,9 @@ public class Database {
     }
 
 	
-	/*
-	 *The following methods verify if the inputed Username and Password from the login screen
-	 *return to a matching Healthcare Provider account or a Patient account. The both take in Strings 
-	 *of username and password then return a boolean determining if the account exists within the list.  
-	 */
+	 /*The following methods verify if the inputed Username and Password from the login screen
+	 *return to a matching Health care Provider account or a Patient account. The both take in Strings 
+	 *of username and password then return a boolean determining if the account exists within the list. */
 	public boolean authenticateHealthcareProvider(String username, String password) {
 		for (HealthcareProvider provider : Clinic49_HealthcareProviders) {
 			if(provider.getUsername().equals(username) && provider.getPassword().equals(password) ) {
@@ -127,11 +145,50 @@ public class Database {
 		
 	public boolean authenticatePatient(String username, String password) {
 		for (Patient patient : Clinic49_Patients) {
-			if(patient.getUsername().equals(username) && patient.getPassword().equals(password) ) {
+			if(patient.getUsername().equals(username) && patient.getPassword().equals(password)) {
 					return true; //match found!
 			}
 		}
 		
 		return false; //no match
+	}
+	
+	/* This method returns a Patient object to a called username and password. This is called by the 
+	 * Patient Registration and the Patient Portal to edit Patient information.  */
+	public Patient patientToUpdate(String username, String password) {
+		for (Patient patient : Clinic49_Patients) {
+            if (patient.getUsername().equals(username) && patient.getPassword().equals(password)) {
+                return patient; //did find given user
+            }
+        }
+		return null; //did not find given user
+	}
+	
+	/* This method returns a Health care Provider object to an inputed username and password. This is called 
+	 * in the login portal in order to pass the correct health care provider to the Portal_HealthcareProviderPortal */
+	public HealthcareProvider healthcareProviderToLogin(String username, String password) {
+		for(HealthcareProvider provider : Clinic49_HealthcareProviders) {
+			if(provider.getUsername().equals(username) && provider.getPassword().equals(password)) {
+				return provider; //found provider with same username and password 
+			}
+		}
+		
+		return null; //did not find matching Health care provider 
+	}
+	
+	public boolean authenticateUniqueUsername(String username) {
+		for(Patient patient : Clinic49_Patients) {
+			if(patient.getUsername().equals(username)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	//TEST METHOD TO BE DELTED 
+	public void printAllUserNames() {
+		for(Patient patient : Clinic49_Patients) {
+			System.out.println(patient.getUsername());
+        }
 	}
 }

@@ -1,13 +1,15 @@
 /*
  * ASU Spring 2024 CSE 360 11057
  * Authors: Haroon Radmard, Nicholas Abate, Aiden Felix, Jackson Silvey, Chirag Jagadish
- * File Version: 1.0.2
+ * File Version: 1.0.3
  * Original File Version: March 20, 2024
- * File Last Updated: March 20, 2024 
+ * File Last Updated: April 9, 2024 
  * 
  * 1. File Description
  *  This is a helper file that stores the Patient class. The Patient class stores vital 
- *  information about the patient (TO BE ADDED)  
+ *  information about the patient for the clinic to know. The patient is the general account 
+ *  for those who are looking to use the clinic's system. The patient is only able to edit information about itself
+ *  and only able to look at information about itself.   
  */
 
 package asuJavaFX360;
@@ -18,15 +20,22 @@ class Patient {
 	private String lastName = null;
 	private String username = null;
 	private String password = null;
-	//private String email = null;
-	//private String medicalHistory = null;
-	//private int phoneNumber = Integer.MIN_VALUE;
-	//private boolean isSetup = false; //only turned true when all other attributes have been correctly initialized 
+	private String patientID = null;
+	private String email = null;
+	private String medicalHistory = null;
+	private String phoneNumber = null;
+	private String DOB = null;
+	private String InsuranceID = null;
+	private String Pharmacy = null;
+	private boolean isSetup = false; //only turned true when all other attributes have been correctly initialized 
 	
-	
-	
+	public void setIsSetup() {
+		if (this.firstName != null) {
+			isSetup = true; //if the first name is has been made then it is determined that RegistrationPortal has completed for this patient
+		}
+	}
 	//helper methods to setup all attributes with correct information 
-	public void setFirstName(String name) { //takes in a String: name, then assigns it to the firstName 
+	public void setFirstName(String name) { 
 		this.firstName = name;
 	}
 	
@@ -40,6 +49,34 @@ class Patient {
 	
 	public void setPassword(String pass) {
 		this.password = pass;
+	}
+	
+	public void setEmail(String mail) {
+		this.email = mail;
+	}
+	
+	public void setMedicalHistory(String history) {
+		this.medicalHistory = history;
+	}
+	
+	public void setPhoneNumber(String pNum) {
+		this.phoneNumber = pNum;
+	}
+	
+	public void setDOB(String dob) {
+		this.DOB = dob;
+	}
+	
+	public void setInsuranceID(String ID) {
+		this.InsuranceID = ID;
+	}
+	
+	public void setPharmacy(String pharmacy) {
+		this.Pharmacy = pharmacy;
+	}
+	
+	public void setPatientID(String id) {
+		this.patientID = id;
 	}
 	
 	
@@ -60,8 +97,30 @@ class Patient {
 		return this.password;
 	}
 	
+	//MIGHT NEED TO BE DELETED 
+	public boolean checkCredentials(String username, String password) {
+        return username.equals(this.username) && password.equals(this.password);
+    }
 	
-	//further implementation required! 
+	public boolean getIsSetup() {
+		return this.isSetup;
+	}
+	
+	public String getEmail() {
+		return this.email;
+	}
+	
+	public String getPhoneNumber() {
+		return this.phoneNumber;
+	}
+	
+	public String getMedicalHistory() {
+		return this.medicalHistory;
+	}
+	
+	public String getPatientID() {
+		return this.patientID;
+	}
 	
 	
 	//THE FOLLOWING IS A TEST METHOD TO BE DELETED BEFORE FINAL PRODUCT 
@@ -70,7 +129,6 @@ class Patient {
 		System.out.println(this.lastName);
 		System.out.println(this.username);
 		System.out.println(this.password);
-		
 	}
 	
 }

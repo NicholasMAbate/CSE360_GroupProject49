@@ -50,22 +50,46 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-	private Database HealthcareProviderDataBase = new Database();
+	
+	//Database that stores file system
+	private static Database database = new Database();
 	
     @Override
     public void start(Stage loginStage) {
-        // Create LoginPortal instance and display
-        LoginPortal loginPortal = new LoginPortal(HealthcareProviderDataBase);
+        // Create frist-time LoginPortal and display it
+        LoginPortal loginPortal = new LoginPortal(database);
         loginPortal.displayInterface();
         
-        //testing functionality of HealthcareProvider class and database
-        HealthcareProvider admin = new HealthcareProvider();
-    	admin.setUsername("testUsername");
-    	admin.setPassword("testPassword");
-    	admin.printAll();
-    	HealthcareProviderDataBase.addHealthcareProvider(admin);
-    	
-    	
+        //HealthcareProvider admin = new HealthcareProvider();
+        //admin.setUsername("Uadmin");
+       // admin.setPassword("Padmin");
+        //database.addHealthcareProvider(admin);
+        
+       // Patient testPatient = new Patient();
+       // testPatient.setUsername("Tuser");
+        //testPatient.setPassword("Tuser");
+        //testPatient.setFirstName("John");
+        //testPatient.setIsSetup();
+       // database.addPatient(testPatient);
+        
+        
+    }
+    
+    @Override
+    public void init() {
+    	/* Before the start of the display program is called in the previous method 
+    	 * this method will load the stored file system onto the program so the programs database 
+    	 * has access to all patients and health care workers */
+    	database.loadFromFiles();
+    	System.out.println("Loaded files!");
+    }
+    
+    @Override
+    public void stop() {
+    	/* The moment before the program terminates the database is saved onto the file system in order to
+    	 * store all new account creations and account changes. */
+        database.saveToFiles();
+        System.out.println("Program is closed");
     }
 
     public static void main(String[] args) {
@@ -73,6 +97,3 @@ public class Main extends Application {
     }
     
 }
-
-
-
