@@ -36,4 +36,3 @@ abstract class Portal {
     // Abstract method to display the interface of the portal
     public abstract void displayInterface();
 }
-

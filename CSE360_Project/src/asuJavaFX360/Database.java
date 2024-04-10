@@ -51,43 +51,73 @@ public class Database {
     }
 	
 	//Method to save the database as a text file 
-	public void saveToFiles() { 
-		try { //prevents IO error by using try catch block
-			
-			//write HealthcareProviders to HealthcareProviders.txt
-			PrintWriter healthcareProviderWriter = new PrintWriter
-					(new FileWriter(System.getProperty("user.home") +"/Desktop/CSE360Project/HealthCareProviders.txt"));
-	        for (HealthcareProvider provider : Clinic49_HealthcareProviders) { //writes down the username, password, first name, and last name onto file.
-	            healthcareProviderWriter.println(
-	            	provider.getUsername() + "," +
-	                provider.getPassword() + "," +
-	                provider.getFirstName() + "," +
-	                provider.getLastName());
-	        }
-	        healthcareProviderWriter.close(); //close stream
+    public void saveToFiles() { //When called it saves the database to the defined path.
+        try { //prevents IO error by using try catch block
+            
+            // Define the base path for your files
+            String basePath = "C:\\ASU\\CSE360\\Java\\360-workspace\\CSE360_Project\\src\\asuJavaFX360\\";
 
-			//write Patients to Patients.txt 
-	        PrintWriter patientWriter = new PrintWriter(new FileWriter(System.getProperty("user.home") + "/Desktop/CSE360Project/Patients.txt"));
-	        for (Patient patient : Clinic49_Patients) {
-	            patientWriter.println( //writes down PatientID, username, password, first name, and last name onto file
-	            	patient.getPatientID() + "," +
-	            	patient.getUsername() + "," +
-	                patient.getPassword() + "," +
-	                patient.getFirstName() + "," +
-	                patient.getLastName());
-	        }
-	        patientWriter.close(); //close stream
-	        
-		} catch (IOException e) {//catches an IO exception :D 
-			e.printStackTrace();
-		}
-	}
-	
+            //write HealthcareProviders to HealthcareProviders.txt
+            PrintWriter healthcareProviderWriter = new PrintWriter(new FileWriter(basePath + "HealthCareProviders.txt"));
+            for (HealthcareProvider provider : Clinic49_HealthcareProviders) {
+                healthcareProviderWriter.println(provider.getUsername() + "," +
+                    provider.getPassword() + "," +
+                    provider.getFirstName() + "," +
+                    provider.getLastName());
+            }
+            healthcareProviderWriter.close();
+
+            //write Patients to Patients.txt 
+            PrintWriter patientWriter = new PrintWriter(new FileWriter(basePath + "Patients.txt"));
+            for (Patient patient : Clinic49_Patients) {
+                patientWriter.println(
+                    patient.getPatientID() + "," +
+                    patient.getUsername() + "," +
+                    patient.getPassword() + "," +
+                    patient.getFirstName() + "," +
+                    patient.getLastName() + "," +
+                    patient.getPhoneNumber() + "," +
+                    patient.getAddress()  + "," +
+                    patient.getAge()      + "," +
+                    patient.getDOB()    + "," +
+                    patient.getEmail() + "," +
+                    patient.getInsuranceID() + "," +
+                    patient.getMedicalHistory() + "," +
+                    patient.getPharmacy());
+            }
+            patientWriter.close();
+            
+        } catch (IOException e) {//catches an IO exception :D 
+            e.printStackTrace();
+        }
+    }
+
+    public Patient getPatientByUsername(String username) {
+        for (Patient patient : Clinic49_Patients) {
+            if (patient.getUsername().equals(username)) {
+                return patient;
+            }
+        }
+        return null; // or throw an exception if preferred :)
+    }
+    
+    public Patient getPatientByFirstAndLast(String fullname){
+        for (Patient patient : Clinic49_Patients) {
+            if (patient.getFullName().equals(fullname)) {
+                return patient;
+            }
+        }
+        return null; // or throw an exception if preferred :)
+    }
     // Public Method to load data from text files
     public void loadFromFiles() {
-        loadHealthcareProvidersFromFile(System.getProperty("user.home") + "/Desktop/CSE360Project/HealthCareProviders.txt");
-        loadPatientsFromFile(System.getProperty("user.home") + "/Desktop/CSE360Project/Patients.txt");
+        // Define the base path for your files
+        String basePath = "C:\\ASU\\CSE360\\Java\\360-workspace\\CSE360_Project\\src\\asuJavaFX360\\";
+
+        loadHealthcareProvidersFromFile(basePath + "HealthCareProviders.txt");
+        loadPatientsFromFile(basePath + "Patients.txt");
     }
+
     
     //The following two methods are private methods called by the public method in order to load
     //the database stored within the different .txt files 
@@ -122,6 +152,15 @@ public class Database {
                 patient.setPassword(parts[2]);
                 patient.setFirstName(parts[3]);
                 patient.setLastName(parts[4]);
+                patient.setFullName(patient.getFirstName(), patient.getLastName());
+                patient.setPhoneNumber(parts[5]);
+                patient.setAddress(parts[6]);
+                patient.setAge(Integer.parseInt(parts[7]));
+                patient.setDOB(parts[8]);
+                patient.setEmail(parts[9]);
+                patient.setInsuranceID(parts[10]);
+                patient.setMedicalHistory(parts[11]);
+                patient.setPharmacy(parts[12]);
                 Clinic49_Patients.add(patient);
             }
         } catch (IOException e) {
