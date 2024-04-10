@@ -110,24 +110,30 @@ public class Database {
         }
     }
     
-    // Load patients from Patients.txt
+// Load patients from Patients.txt
     private void loadPatientsFromFile(String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                Patient patient = new Patient();
-                patient.setPatientID(parts[0]);
-                patient.setUsername(parts[1]);
-                patient.setPassword(parts[2]);
-                patient.setFirstName(parts[3]);
-                patient.setLastName(parts[4]);
-                Clinic49_Patients.add(patient);
+                if (parts.length >= 5) { // Ensure there are at least 5 parts
+                    Patient patient = new Patient();
+                    patient.setPatientID(parts[0]);
+                    patient.setUsername(parts[1]);
+                    patient.setPassword(parts[2]);
+                    patient.setFirstName(parts[3]);
+                    patient.setLastName(parts[4]);
+                    Clinic49_Patients.add(patient);
+                } else {
+                    // Handle the case where the line doesn't contain enough parts
+                    System.err.println("Invalid line: " + line);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
 	
 	 /*The following methods verify if the inputed Username and Password from the login screen
