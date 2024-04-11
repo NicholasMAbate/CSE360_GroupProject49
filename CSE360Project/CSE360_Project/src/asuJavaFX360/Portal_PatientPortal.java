@@ -30,10 +30,13 @@ import javafx.stage.Stage;
 class PatientPortal extends Portal {
 	private Stage patientStage;
 	private Database database;
+	private Patient patient;
+	private String username;
 	
-    public PatientPortal(Database database) {
+    public PatientPortal(Database database, String username) {
         super(); // calls the constructor of the parent class (Portal)
         this.database = database;
+        this.username = username;
     }
 
     @Override //NEEDS LOTS OF WORK, JUST INITIAL PATIENT PORTAL INTERFACE
@@ -45,17 +48,23 @@ class PatientPortal extends Portal {
         patientStage.setTitle("Patient Portal Interface");
 
         BorderPane root = new BorderPane();
+        
+        patient = database.getPatientByUsername(username);
+        
+        String firstName = patient.getFirstName();
+        String lastName = patient.getLastName();
 
         // Welcome section
-        Label welcomeLabel = new Label("Welcome Back LastName, FirstName"); 
+        Label welcomeLabel = new Label("Welcome Back " + lastName + ", " + firstName); 
 
         // Health History Section
-        TextArea healthHistory = new TextArea("Health History:\n*date diagnosed*         *medical condition*");
+        TextArea healthHistory = new TextArea("Health History:\n*date diagnosed*         *medical condition*\n" +
+        		                              "                                        " + patient.getMedicalHistory() );
         healthHistory.setEditable(false);
         healthHistory.setPrefHeight(200); // Set preferred height
 
         // Prescription History Section
-        TextArea prescriptionHistory = new TextArea("Prescription History:\n*date issued*           *Prescription name*");
+        TextArea prescriptionHistory = new TextArea("Prescription History:\n*date issued*          *Prescription name*");
         prescriptionHistory.setEditable(false);
         prescriptionHistory.setPrefHeight(200); // Set preferred height
 

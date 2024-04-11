@@ -18,12 +18,15 @@ class Patient {
 	//Initializing all attributes to null 
 	private String firstName = null;
 	private String lastName = null;
+	private String fullName = null;
 	private String username = null;
 	private String password = null;
 	private String patientID = null;
 	private String email = null;
 	private String medicalHistory = null;
 	private String phoneNumber = null;
+	private int age;
+	private String address = null;
 	private String DOB = null;
 	private String InsuranceID = null;
 	private String Pharmacy = null;
@@ -43,6 +46,10 @@ class Patient {
 		this.lastName = name;
 	}
 	
+	public void setFullName(String first, String last) {
+		this.fullName = first + " " + last;
+	}
+	
 	public void setUsername(String name) {
 		this.username = name;
 	}
@@ -53,6 +60,10 @@ class Patient {
 	
 	public void setEmail(String mail) {
 		this.email = mail;
+	}
+	
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 	public void setMedicalHistory(String history) {
@@ -78,7 +89,10 @@ class Patient {
 	public void setPatientID(String id) {
 		this.patientID = id;
 	}
-	
+
+	public void setAge(int age) {
+		this.age = age;
+	}
 	
 	//helper methods to get attributes 
 	public String getFirstName() {
@@ -87,6 +101,10 @@ class Patient {
 	
 	public String getLastName() {
 		return this.lastName;
+	}
+	
+	public String getFullName() {
+		return this.fullName;
 	}
 	
 	public String getUsername() {
@@ -114,8 +132,28 @@ class Patient {
 		return this.phoneNumber;
 	}
 	
+	public String getAddress() {
+		return this.address;
+	}
+	
+	public int getAge() {
+		return this.age;
+	}
+	
+	public String getDOB() {
+		return this.DOB;
+	}
+	
 	public String getMedicalHistory() {
 		return this.medicalHistory;
+	}
+	
+	public String getPharmacy() {
+		return this.Pharmacy;
+	}
+	
+	public String getInsuranceID() {
+		return this.InsuranceID;
 	}
 	
 	public String getPatientID() {
