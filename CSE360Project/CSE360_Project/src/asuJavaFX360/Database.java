@@ -1,9 +1,9 @@
 /*
  * ASU Spring 2024 CSE 360 11057
  * Authors: Haroon Radmard, Nicholas Abate, Aiden Felix, Jackson Silvey, Chirag Jagadish
- * File Version: 1.0.4
+ * File Version: 1.0.5
  * Original File Version: March 20, 2024
- * File Last Updated: April 9, 2024 
+ * File Last Updated: April 10, 2024 
  * 
  * 1. File Description
  *  This is a helper file that allows for account storage and data storage. This is done by 
@@ -54,10 +54,10 @@ public class Database {
     public void saveToFiles() { //When called it saves the database to the defined path.
         try { //prevents IO error by using try catch block
             
-            // Define the base path for your files
+            // Defines primary path for file directory
             String basePath = System.getProperty("user.home") + "/Desktop/CSE360Project/";
 
-            //write HealthcareProviders to HealthcareProviders.txt
+            //writes HealthcareProviders to a text file: HealthcareProviders.txt
             PrintWriter healthcareProviderWriter = new PrintWriter(new FileWriter(basePath + "HealthCareProviders.txt"));
             for (HealthcareProvider provider : Clinic49_HealthcareProviders) {
                 healthcareProviderWriter.println(provider.getUsername() + "," +
@@ -67,7 +67,7 @@ public class Database {
             }
             healthcareProviderWriter.close();
 
-            //write Patients to Patients.txt 
+            //write Patients to .txt file: Patients.txt 
             PrintWriter patientWriter = new PrintWriter(new FileWriter(basePath + "Patients.txt"));
             for (Patient patient : Clinic49_Patients) {
                 patientWriter.println(
@@ -92,6 +92,7 @@ public class Database {
         }
     }
 
+	//This method is the backworks for searching from a doctor's POV. It returns the Patient object if there is a match.
     public Patient getPatientByUsername(String username) {
         for (Patient patient : Clinic49_Patients) {
             if (patient.getUsername().equals(username)) {
@@ -109,9 +110,9 @@ public class Database {
         }
         return null; // or throw an exception if preferred :)
     }
-    // Public Method to load data from text files
+    // load data from the text files
     public void loadFromFiles() {
-        // Define the base path for your files
+        
         String basePath = System.getProperty("user.home") + "/Desktop/CSE360Project/";
 
         loadHealthcareProvidersFromFile(basePath + "HealthCareProviders.txt");
@@ -140,7 +141,7 @@ public class Database {
         }
     }
     
-    // Load patients from Patients.txt
+    // Load patients from the Patients.txt file
     private void loadPatientsFromFile(String filename) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
