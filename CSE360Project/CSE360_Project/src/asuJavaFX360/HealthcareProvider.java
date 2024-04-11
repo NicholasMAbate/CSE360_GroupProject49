@@ -1,9 +1,9 @@
 /*
  * ASU Spring 2024 CSE 360 11057
  * Authors: Haroon Radmard, Nicholas Abate, Aiden Felix, Jackson Silvey, Chirag Jagadish
- * File Version: 1.0.3
+ * File Version: 1.0.4
  * Original File Version: March 20, 2024
- * File Last Updated: April 9, 2024 
+ * File Last Updated: April 10, 2024 
  * 
  * 1. File Description
  *  This is a helper file that stores the HealthcareProvider class. This class is an object 
@@ -67,8 +67,7 @@ class HealthcareProvider {
 		public boolean checkCredentials(String username, String password) {
 	        return username.equals(this.username) && password.equals(this.password);
 	    }
-		//further implementation required 
-		
+				
 		
 		//THE FOLLOWING IS A TEST METHOD TO BE DELETED BEFORE FINAL PRODUCT 
 		public void printAll() {
