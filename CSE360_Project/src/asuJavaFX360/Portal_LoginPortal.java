@@ -118,8 +118,7 @@ class LoginPortal extends Portal {
      * Upon receiving the username and password, this method checks if the credentials correspond 
      * to a healthcare provider account, a patient account, or none. It then directs the user to 
      * the appropriate portal based on their account type or displays an error message if no account 
-     * is found for the given credentials.
-     */
+     * is found for the given credentials. */
     
     private void login(String username, String password) {
     	System.out.println("Login button clicked with username: " + username + " with password: " + password); //test line TO BE DELTED 
@@ -137,7 +136,7 @@ class LoginPortal extends Portal {
             // Close the login stage after successful login
             this.loginStage.close();
             
-          //test line TO BE DELETED 
+          //Keep track in console
             System.out.println("Login Screen Closed");
         }
         // Check if the username and password correspond to a patient account 
@@ -156,9 +155,9 @@ class LoginPortal extends Portal {
                 
               //test line TO BE DELETED 
                 System.out.println("Login Screen Closed");
-            } else { //if it has NOT gone through registration, patient it taken to Portal_PatientRegistrationPortal to complete
+            } else { //if it has NOT gone through registration, patient is taken to Portal_PatientRegistrationPortal to complete
                 // Initialize a RegistrationPortal instance for account registration
-                RegistrationPortal registrationPortal = new RegistrationPortal(database, username, password);
+            	RegistrationPortal registrationPortal = new RegistrationPortal(database, username, password);
                 
                 // Display the interface of the RegistrationPortal for account registration
                 registrationPortal.displayInterface();

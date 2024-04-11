@@ -81,12 +81,13 @@ class SignUpPortal extends Portal {
         backBtnBox.getChildren().add(backBtn);
         grid.add(backBtnBox, 1, 5);
 
-        // Set action on button click and Add validation for username, password, and confirm password fields
+        // Set action on button click and add validation for username, password, and confirm password fields
         btn.setOnAction(e -> {
             String username = userTextField.getText().trim();
             String password = pwBox.getText().trim();
             String confirmPassword = confirmPwBox.getText().trim();
             
+        //Handle formatting of user entries
             if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 showError("Please fill in all fields.");
             } else if (username.length() > 10) {
@@ -136,7 +137,6 @@ class SignUpPortal extends Portal {
     		newPatient.setUsername(username);
     		newPatient.setPassword(password);
     		database.addPatient(newPatient);
-    		database.printAllUserNames();
     
     		//go back to login portal now that the account is created 
     		LoginPortal loginPortal = new LoginPortal(database);
