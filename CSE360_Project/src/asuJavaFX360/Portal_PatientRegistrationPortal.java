@@ -106,9 +106,11 @@ class RegistrationPortal extends Portal {
         confirmButtonBox.setAlignment(Pos.CENTER);
         confirmButtonBox.getChildren().add(confirmButton);
         grid.add(confirmButtonBox, 1, 9);
+        
+        //Event handling that saves info entered by users
         confirmButton.setOnAction(event -> confirmed(firstNameField.getText(), lastNameField.getText(), ageField.getText(),
         		dobField.getText(), addressField.getText(), phoneNumberField.getText(), emailField.getText(), 
-        		insuranceIdField.getText(), pharmacyField.getText() ));
+        		insuranceIdField.getText(), pharmacyField.getText()));
         
      // Back button
         Button backBtn = new Button("Back");
@@ -132,6 +134,7 @@ class RegistrationPortal extends Portal {
         registrationStage.show();
     }
     
+    //This method essentially ensures formatting of user entry and saves it to patient object of interest
     private void confirmed(String firstName, String lastName, String age, String DOB, String address, String pNum, String emailAddress, String Insurance, String Pharmacy) {
     	
     	// Check if any field exceeds 15 characters
@@ -194,7 +197,8 @@ class RegistrationPortal extends Portal {
             
             // Set the account as fully setup
             patientToUpdate.setIsSetup();
-            createPatientInfoFile(formattedPatientID, firstName, lastName, DOB, pNum, emailAddress, Insurance, Pharmacy);
+            createPatientInfoFile(formattedPatientID, firstName, lastName, Integer.parseInt(age),
+            		DOB, address, pNum, emailAddress, Insurance, Pharmacy);
             
             // Go back to Login Portal 
             LoginPortal loginPortal = new LoginPortal(database);
@@ -211,19 +215,24 @@ class RegistrationPortal extends Portal {
         }
     }
     
+    
+    //Creates file
     private void createPatientInfoFile(String patientID, String firstName, 
-    		String lastName, String DOB, String pNum, String emailAddress, String Insurance, String Pharmacy) {
+    		String lastName, int age, String DOB, String address, String pNum, String emailAddress, String Insurance, String Pharmacy) {
     	// Construct the file name based on patient ID
     	String filename = "C:\\ASU\\CSE360\\Java\\360-workspace\\CSE360_Project\\src\\asuJavaFX360\\" + patientID + "_PatientInfo.txt";
     	 // Attempt to create the file and write patient information
     	try(FileWriter writer = new FileWriter(filename)) {
-    		writer.write("Patient ID: " + patientID + "\n");
-            writer.write("First Name: " + firstName + "\n");
-            writer.write("Last Name: " + lastName + "\n");
-            writer.write("DOB: " + DOB + "\n");
-            writer.write("Email Address: " + emailAddress + "\n");
-            writer.write("Insurance Number: " + Insurance + "\n");
-            writer.write("Pharmacy: " + Pharmacy + "\n");
+    		writer.write(patientID + "\n");
+            writer.write(firstName + "\n");
+            writer.write(lastName + "\n");
+            writer.write(age + "\n");
+            writer.write(DOB + "\n");
+            writer.write(address + "\n");
+            writer.write(pNum + "\n");
+            writer.write(emailAddress + "\n");
+            writer.write(Insurance + "\n");
+            writer.write(Pharmacy + "\n");
             
             System.out.println("Patient information file created successfully: " + filename); // error checking DELETE before final submission 
             

@@ -13,13 +13,18 @@
 
 package asuJavaFX360;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -30,9 +35,12 @@ import javafx.stage.Stage;
 
 class HealthcareProviderPortal extends Portal {
 	
+	//Instance variables
     private Database database;
     private Stage stage = new Stage();
     private Patient patient;
+    private Appointment appointment;
+    private String patientID;
 
     public HealthcareProviderPortal(Database database) {
         super(); // calls the constructor of the parent class (Portal)
@@ -54,13 +62,7 @@ class HealthcareProviderPortal extends Portal {
         searchBox.setPadding(new Insets(10));
         searchBox.setAlignment(Pos.CENTER);
 
-        // Left: Messages Section
-        ListView<String> messageList = new ListView<>();
-        messageList.getItems().addAll("Person 1", "Person 2", "Person 3", "Person 4"); // Dummy data
-        VBox leftPanel = new VBox(new Label("Messages"), messageList);
-        leftPanel.setPadding(new Insets(10));
-        leftPanel.setSpacing(5);
-
+ 
         // Center: Patient Lookup Form
         GridPane centerPanel = new GridPane();
         centerPanel.setPadding(new Insets(10));
@@ -116,44 +118,101 @@ class HealthcareProviderPortal extends Portal {
         centerPanel.add(new Label("Preferred Pharmacy"), 0, 8);
         centerPanel.add(pharmacyField, 1, 8);
 
-        // Patient History
-        centerPanel.add(new Label("Patient Health History Questionnaire"), 2, 1, 2, 1);
-        // Add CheckBoxes for questions Q1 to Q6 here
-
-        centerPanel.add(new Label("Prescription History"), 2, 2, 2, 1);
-        // Add TextArea for prescription history here
-
-        centerPanel.add(new Label("History of immunization"), 2, 3, 2, 1);
-        // Add TextArea for immunization history here
+        VBox healthHistoryQuestionnaireBox = new VBox(10);
+        healthHistoryQuestionnaireBox.getChildren().add(new Label("Health History Questionnaire"));
+        
+        // Health Questionnaire
+        CheckBox q1 = new CheckBox("Do you have any allergies?");
+        CheckBox q2 = new CheckBox("Do you have a familial history of heart problems?");
+        CheckBox q3 = new CheckBox("Do you have a familial history of cancer?");
+        CheckBox q4 = new CheckBox("Do you have the CDC's recommended vaccinations?");
+        q1.setOnAction(event -> {
+            q1.setDisable(true);
+            q1.setStyle("-fx-opacity: 1;");
+        });
+        q2.setOnAction(event -> {
+            q2.setDisable(true);
+            q2.setStyle("-fx-opacity: 1;");
+        });
+        q3.setOnAction(event -> {
+            q3.setDisable(true);
+            q3.setStyle("-fx-opacity: 1;");
+        });
+        q4.setOnAction(event -> {
+            q4.setDisable(true);
+            q4.setStyle("-fx-opacity: 1;");
+        });
+        
+        // Add all checkboxes to perspective
+        healthHistoryQuestionnaireBox.getChildren().addAll(q1, q2, q3, q4);
 
         // Right: Patient Appointment Details
         VBox appointmentDetailsBox = new VBox(10);
         appointmentDetailsBox.setPadding(new Insets(10));
+
+        // Adding labels
         appointmentDetailsBox.getChildren().add(new Label("Patient Appointment Details:"));
         appointmentDetailsBox.getChildren().add(new Label("Today's Date:"));
-        appointmentDetailsBox.getChildren().add(new TextField());
-        appointmentDetailsBox.getChildren().add(new Label("Patient Temperature (F):"));
-        appointmentDetailsBox.getChildren().add(new TextField());
-        appointmentDetailsBox.getChildren().add(new Label("Patient Heart Rate:"));
-        appointmentDetailsBox.getChildren().add(new TextField());
-        appointmentDetailsBox.getChildren().add(new Label("Patient Weight:"));
-        appointmentDetailsBox.getChildren().add(new TextField());
-        appointmentDetailsBox.getChildren().add(new Label("Patient Height:"));
-        appointmentDetailsBox.getChildren().add(new TextField());
-        appointmentDetailsBox.getChildren().add(new Label("Patient Blood Pressure:"));
-        appointmentDetailsBox.getChildren().add(new TextField());
-        appointmentDetailsBox.getChildren().add(new Label("Summary of Visit:"));
-        appointmentDetailsBox.getChildren().add(new TextArea());
 
-        // Bottom: Save button
-        Button saveButton = new Button("Save Details");
-        HBox bottomPanel = new HBox(saveButton);
-        bottomPanel.setAlignment(Pos.CENTER_RIGHT);
-        bottomPanel.setPadding(new Insets(10));
+        // Declare and add TextFields and TextArea
+        TextField dateField = new TextField();
+        TextField temperatureField = new TextField();
+        TextField heartRateField = new TextField();
+        TextField weightField = new TextField();
+        TextField heightField = new TextField();
+        TextField bloodPressureField = new TextField();
+        TextArea summaryArea = new TextArea();
+        
+        // Left: Messages Section
+        TextArea messagesTextArea = new TextArea();
+        messagesTextArea.setPromptText("Enter your message here...");
+        messagesTextArea.setPrefWidth(300);
+        messagesTextArea.setPrefHeight(200);
+
+        //Write messages to file for future use
+        Button messageButton = new Button("Message!");
+        messageButton.setOnAction(event -> {
+            String message = messagesTextArea.getText();
+            if (!message.isEmpty()) {
+                patientID = patient.getPatientID();
+                String filename = "C:\\ASU\\CSE360\\Java\\360-workspace\\CSE360_Project\\src\\asuJavaFX360\\" + patientID + "_message.txt";
+                try (FileWriter writer = new FileWriter(filename, true)) {
+                    writer.write("\n-----------------\n");
+                    writer.write("Doctor: " + message + "\n");
+                    System.out.println("Message saved to file: " + filename);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                messagesTextArea.clear(); // Clear the text area after saving the message
+            }
+        });
+        
+        VBox messagesSection = new VBox(10, new Label("Messages"), messagesTextArea, messageButton);
+        messagesSection.setPrefWidth(300);
+        
+
+        // Layout setup
+        HBox mainContent = new HBox(10, messagesSection, centerPanel, appointmentDetailsBox);
+        mainContent.setAlignment(Pos.CENTER); // Center the main content
+
+        root.setTop(searchBox);
+        root.setLeft(messagesSection);
+        root.setCenter(mainContent);
+
+        // Adding fields to VBox
+        appointmentDetailsBox.getChildren().addAll(dateField, new Label("Patient Temperature (F):"), temperatureField,
+                new Label("Patient Heart Rate:"), heartRateField, new Label("Patient Weight:"), weightField,
+                new Label("Patient Height:"), heightField, new Label("Patient Blood Pressure:"), bloodPressureField,
+                new Label("Summary of Visit:"), summaryArea);
+        
+        // Bottom: Save Appointment Details button
+        Button submitButton = new Button("Submit");
+        appointmentDetailsBox.getChildren().add(submitButton);
         
         //THIS WILL UPDATE ALL ABOVE FIELDS AFTER SEARCHING
         searchButton.setOnAction(event -> {
         	patient = database.getPatientByFirstAndLast(searchField.getText());
+        	
             if (patient != null) {
                 nameField.setText(patient.getFullName());
                 ageField.setText(Integer.toString(patient.getAge()));
@@ -170,14 +229,125 @@ class HealthcareProviderPortal extends Portal {
                 alert.setContentText("No patient found with the provided name. Please try again.");
                 alert.showAndWait();
             }
+            
+            //SHOW ANY PAST MESSAGES
+            patientID = patient.getPatientID();
+            String filename = "C:\\ASU\\CSE360\\Java\\360-workspace\\CSE360_Project\\src\\asuJavaFX360\\" + patientID + "_message.txt";
+  
+            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+                StringBuilder messageContent = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    messageContent.append(line).append("\n");
+                }
+                messagesTextArea.setText(messageContent.toString());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            
+            // History of Appointments Section
+            ComboBox<String> previousVisitsDropdown = new ComboBox<>();
+            previousVisitsDropdown.setPromptText("Date of Previous Appointment");
+
+            // Populate the ComboBox with the patient's appointment dates
+            if (patient != null) {
+                for (Appointment appointment : patient.getAppointments()) {
+                    previousVisitsDropdown.getItems().add(appointment.getDate());
+                }
+            }
+
+            // Create a TextArea for displaying the selected appointment details
+            TextArea previousVisitsSummary = new TextArea("Summary of previous appointment:\n\nDetails...");
+            previousVisitsSummary.setEditable(false);
+
+            // Listener to update the TextArea when a date is selected in the ComboBox
+            previousVisitsDropdown.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+                // Assuming 'patient' is already defined and contains the appointment data
+                patient.getAppointments().stream()
+                        .filter(appointment -> appointment.getDate().equals(newValue))
+                        .findFirst()
+                        .ifPresent(appointment -> {
+                            previousVisitsSummary.setText(String.format("Summary of previous appointment:\n\n" +
+                                    "%s",
+                                    appointment.getSummaryOfVisit()));
+                        });
+            });
+
+            // Create a VBox to contain the ComboBox and the TextArea (dropdown menu)
+            VBox appointmentsHistoryBox = new VBox(10);
+            appointmentsHistoryBox.getChildren().addAll(
+                new Label("Appointment History"),
+                previousVisitsDropdown,
+                previousVisitsSummary
+            );
+
+            // Add this VBox to the centerPanel
+            centerPanel.add(appointmentsHistoryBox, 9, 12, 2, 2);
+            centerPanel.add(healthHistoryQuestionnaireBox, 0, 9, 3, 1); 
+        });
+        
+        
+        //THIS WILL PUSH APPOINTMENT OBJECTS TO PATIENT OF INTEREST POST SEARCH!
+        submitButton.setOnAction(e -> {
+        	patient = database.getPatientByFirstAndLast(searchField.getText());
+        	
+            appointment = new Appointment(dateField.getText(), temperatureField.getText(), heartRateField.getText(), weightField.getText(), 
+            		heightField.getText(), bloodPressureField.getText(), summaryArea.getText());
+            
+            patient.addAppointment(appointment);
+            
+            dateField.setText("");
+            temperatureField.setText("");
+            heartRateField.setText("");
+            weightField.setText("");
+            heightField.setText("");
+            bloodPressureField.setText("");
+            summaryArea.setText("");
+            // History of Appointments Section
+            ComboBox<String> previousVisitsDropdown = new ComboBox<>();
+            previousVisitsDropdown.setPromptText("Date of Previous Appointment");
+
+            // Populate the ComboBox with the patient's appointment dates
+            if (patient != null) {
+                for (Appointment appointment : patient.getAppointments()) {
+                    previousVisitsDropdown.getItems().add(appointment.getDate());
+                }
+            }
+
+            // Create a TextArea for displaying the selected appointment details
+            TextArea previousVisitsSummary = new TextArea("Summary of previous appointment:\n\nDetails...");
+            previousVisitsSummary.setEditable(false);
+
+            // Updates the TextArea when a date is selected in the ComboBox
+            previousVisitsDropdown.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+                // Assuming 'patient' is already defined and contains the appointment data
+                patient.getAppointments().stream()
+                        .filter(appointment -> appointment.getDate().equals(newValue))
+                        .findFirst()
+                        .ifPresent(appointment -> {
+                            previousVisitsSummary.setText(String.format("Summary of previous appointment:\n\n" +
+                                    "%s",
+                                    appointment.getSummaryOfVisit()));
+                        });
+            });
+
+            // Create a VBox to contain the ComboBox and the TextArea
+            VBox appointmentsHistoryBox = new VBox(10);
+            appointmentsHistoryBox.getChildren().addAll(
+                new Label("Appointment History"),
+                previousVisitsDropdown,
+                previousVisitsSummary
+            );
+
+            //Show appointment history
+            centerPanel.add(appointmentsHistoryBox, 9, 12, 2, 2);
         });
 
         // Assemble the main layout
         root.setTop(searchBox);
-        root.setLeft(leftPanel);
+        root.setLeft(messagesSection);
         root.setCenter(centerPanel);
         root.setRight(appointmentDetailsBox);
-        root.setBottom(bottomPanel);
 
         // Set the primary stage
         stage.setScene(new Scene(root, xDimension, yDimension));

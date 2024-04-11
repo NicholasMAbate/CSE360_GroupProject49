@@ -20,7 +20,6 @@ class HealthcareProvider {
 		private String lastName;
 		private String username;
 		private String password;
-		
 	
 	//constructor 
 	public HealthcareProvider() {

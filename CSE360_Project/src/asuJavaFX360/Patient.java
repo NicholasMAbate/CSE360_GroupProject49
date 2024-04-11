@@ -14,6 +14,9 @@
 
 package asuJavaFX360;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class Patient {
 	//Initializing all attributes to null 
 	private String firstName = null;
@@ -30,6 +33,7 @@ class Patient {
 	private String DOB = null;
 	private String InsuranceID = null;
 	private String Pharmacy = null;
+	private List<Appointment> appointments = new ArrayList<>();
 	private boolean isSetup = false; //only turned true when all other attributes have been correctly initialized 
 	
 	public void setIsSetup() {
@@ -94,6 +98,79 @@ class Patient {
 		this.age = age;
 	}
 	
+    public void addAppointment(Appointment appointment) {
+        if (appointment != null) {
+            this.appointments.add(appointment);
+        }
+    }
+
+    // Method to remove an appointment from the list
+    public boolean removeAppointment(Appointment appointment) {
+        return this.appointments.remove(appointment);
+    }
+
+    // Method to get the list of appointments
+    public List<Appointment> getAppointments() {
+        return new ArrayList<>(this.appointments); // Return a copy to avoid direct manipulation
+    }
+    
+    public String getAppointmentsAsString() {
+        StringBuilder result = new StringBuilder();
+        for (Appointment appointment : getAppointments()) { 
+            
+            result.append(String.format(
+                "Date: %s, Temperature: %s, Height: %s cm, Weight: %s kg, Heart Rate: %s bpm, Blood Pressure: %s, Summary: %s\n\n",
+                appointment.getDate(), 
+                appointment.getTemperature(),
+                appointment.getHeight(),
+                appointment.getWeight(),
+                appointment.getHeartRate(),
+                appointment.getBloodPressure(),
+                appointment.getSummaryOfVisit()
+            ));
+        }
+        return result.toString().trim(); // Trim to remove the last newline characters
+    }
+    
+    public void recreateAppointmentsFromString(String appointmentData) {
+        if (appointmentData == null || appointmentData.trim().isEmpty()) {
+            return; // No data to parse.
+        }
+
+        this.appointments = new ArrayList<>(); // Resetting or initializing the appointments list.
+
+        // Split the appointmentData string into individual appointment strings.
+        String[] appointmentStrings = appointmentData.split("\n\n");
+        for (String singleAppointmentData : appointmentStrings) {
+            try {
+                // For each appointment, split the details.
+                // Need to ensure we don't split by commas within the Summary text.
+                String[] details = singleAppointmentData.split(", (?![^\\[]*\\])"); // Split by commas not within brackets if Summary includes commas.
+
+                String date = extractValue(details[0], "Date: ");
+                String temperature = extractValue(details[1], "Temperature: ");
+                String height = extractValue(details[2], "Height: ").replace(" cm", ""); // Remove redundant units
+                String weight = extractValue(details[3], "Weight: ").replace(" kg", ""); // Remove redundant units
+                String heartRate = extractValue(details[4], "Heart Rate: ").replace(" bpm", ""); // Remove redundant units
+                String bloodPressure = extractValue(details[5], "Blood Pressure: ");
+                // Assuming summary might be the last part and could have commas itself.
+                String summary = details.length > 6 ? singleAppointmentData.substring(singleAppointmentData.indexOf("Summary: ") + "Summary: ".length()) : "";
+
+                Appointment appointment = new Appointment(date, temperature, height, weight, heartRate, bloodPressure, summary);
+                this.appointments.add(appointment);
+            } catch (Exception e) {
+                e.printStackTrace(); // Log exception
+            }
+        }
+    }
+
+
+    // Helper method to extract value after a label
+    private String extractValue(String detail, String label) {
+        return detail.substring(detail.indexOf(label) + label.length()).trim();
+    }
+
+	
 	//helper methods to get attributes 
 	public String getFirstName() {
 		return this.firstName;
@@ -145,7 +222,7 @@ class Patient {
 	}
 	
 	public String getMedicalHistory() {
-		return this.medicalHistory;
+		return "No major operations; no known severe allergies";
 	}
 	
 	public String getPharmacy() {
@@ -159,7 +236,6 @@ class Patient {
 	public String getPatientID() {
 		return this.patientID;
 	}
-	
 	
 	//THE FOLLOWING IS A TEST METHOD TO BE DELETED BEFORE FINAL PRODUCT 
 	public void printAll() {

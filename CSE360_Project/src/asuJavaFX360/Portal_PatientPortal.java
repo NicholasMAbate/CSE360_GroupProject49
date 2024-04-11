@@ -13,12 +13,18 @@
 
 package asuJavaFX360;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+import java.util.Scanner;
+
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -58,32 +64,98 @@ class PatientPortal extends Portal {
         Label welcomeLabel = new Label("Welcome Back " + lastName + ", " + firstName); 
 
         // Health History Section
-        TextArea healthHistory = new TextArea("Health History:\n*date diagnosed*         *medical condition*\n" +
-        		                              "                                        " + patient.getMedicalHistory() );
-        healthHistory.setEditable(false);
+        TextArea healthHistory = new TextArea("Health History: " + patient.getMedicalHistory() );
+        healthHistory.setEditable(true);
         healthHistory.setPrefHeight(200); // Set preferred height
 
         // Prescription History Section
-        TextArea prescriptionHistory = new TextArea("Prescription History:\n*date issued*          *Prescription name*");
-        prescriptionHistory.setEditable(false);
+        TextArea prescriptionHistory = new TextArea("Prescription History: ");
+        prescriptionHistory.setEditable(true);
         prescriptionHistory.setPrefHeight(200); // Set preferred height
-
+        
+        
         // Summary of Previous Visits Section
         ComboBox<String> previousVisitsDropdown = new ComboBox<>();
         previousVisitsDropdown.setPromptText("Date of Previous Appointment");
-        previousVisitsDropdown.getItems().addAll("2024-01-01", "2024-02-15", "2024-03-20"); // Sample dates
+
+        // Keep a reference to the patient's appointments
+        List<Appointment> appointments = patient.getAppointments();
+
+        for (Appointment appointment : appointments) {
+            previousVisitsDropdown.getItems().add(appointment.getDate());
+        }
+
         TextArea previousVisitsSummary = new TextArea("Summary of previous appointment:\n\nDetails...");
         previousVisitsSummary.setEditable(false);
+
+        // Updates previous visit dropdown whenever doctor/provider enters new information from their portal.
+        previousVisitsDropdown.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            // Find the appointment that matches date
+            for (Appointment appointment : appointments) {
+                if (appointment.getDate().equals(newValue)) {
+                    // Update the TextArea with the details of the selected appointment
+                    previousVisitsSummary.setText("Summary of previous appointment:\n\n" +
+                        "Date: " + appointment.getDate() + "\n" +
+                        "Temperature: " + appointment.getTemperature() + "\n" +
+                        "Height: " + appointment.getHeight() + "\n" +
+                        "Weight: " + appointment.getWeight() + "\n" +
+                        "Heart Rate: " + appointment.getHeartRate() + "\n" +
+                        "Blood Pressure: " + appointment.getBloodPressure() + "\n" +
+                        "Summary: " + appointment.getSummaryOfVisit());
+                    break; // Stop once the appointment is found
+                }
+            }
+        });
+
         VBox previousVisitsSection = new VBox(10, previousVisitsDropdown, previousVisitsSummary);
 
         // Messages Section
-        ListView<String> messagesList = new ListView<>();
-        messagesList.getItems().addAll("Doctor 1", "Doctor 2", "Nurse 1", "Nurse 2", "Nurse 3");
-        messagesList.setPrefWidth(300); // Set preferred width
+        TextArea messagesTextArea = new TextArea();
+        messagesTextArea.setPromptText("Enter your message here...");
+        messagesTextArea.setPrefWidth(300);
+        messagesTextArea.setPrefHeight(200);
+
+        //Write messages to file for future use
+        Button messageButton = new Button("Message!");
+        messageButton.setOnAction(event -> {
+            String message = messagesTextArea.getText();
+            if (!message.isEmpty()) {
+                String patientID = patient.getPatientID();
+                String filename = "C:\\ASU\\CSE360\\Java\\360-workspace\\CSE360_Project\\src\\asuJavaFX360\\" + patientID + "_message.txt";
+                try (FileWriter writer = new FileWriter(filename, true)) {
+                    writer.write("-----------------\n");
+                    writer.write("Patient: " + patient.getLastName() + ", " + patient.getFirstName() + "\n");
+                    writer.write(message + "\n");
+                    System.out.println("Message saved to file: " + filename);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                messagesTextArea.clear(); // Clear the text area after saving the message
+            }
+        });
+
+        VBox messagesSection = new VBox(10, messagesTextArea, messageButton);
+        messagesSection.setPrefWidth(300);
+
+        // Display messages from file if it exists and is not empty
+        String patientID = patient.getPatientID();
+        String filename = "C:\\ASU\\CSE360\\Java\\360-workspace\\CSE360_Project\\src\\asuJavaFX360\\" + patientID + "_message.txt";
+        File file = new File(filename);
+        if (file.exists() && file.length() > 0) {
+            try (Scanner scanner = new Scanner(file)) {
+                StringBuilder fileContents = new StringBuilder();
+                while (scanner.hasNextLine()) {
+                    fileContents.append(scanner.nextLine()).append("\n");
+                }
+                messagesTextArea.setText(fileContents.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
 
         // Layout setup
         VBox leftSection = new VBox(10, welcomeLabel, healthHistory, prescriptionHistory, previousVisitsSection);
-        VBox rightSection = new VBox(10, new Label("Messages"), messagesList);
+        VBox rightSection = new VBox(10, new Label("Messages"), messagesSection);
         HBox.setHgrow(leftSection, Priority.ALWAYS); // Make left section grow
         HBox.setHgrow(rightSection, Priority.ALWAYS); // Make right section grow
 

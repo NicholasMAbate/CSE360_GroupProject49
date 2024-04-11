@@ -71,19 +71,20 @@ public class Database {
             PrintWriter patientWriter = new PrintWriter(new FileWriter(basePath + "Patients.txt"));
             for (Patient patient : Clinic49_Patients) {
                 patientWriter.println(
-                    patient.getPatientID() + "," +
-                    patient.getUsername() + "," +
-                    patient.getPassword() + "," +
-                    patient.getFirstName() + "," +
-                    patient.getLastName() + "," +
-                    patient.getPhoneNumber() + "," +
-                    patient.getAddress()  + "," +
-                    patient.getAge()      + "," +
-                    patient.getDOB()    + "," +
-                    patient.getEmail() + "," +
-                    patient.getInsuranceID() + "," +
-                    patient.getMedicalHistory() + "," +
-                    patient.getPharmacy());
+                    patient.getPatientID()     + "," +
+                    patient.getUsername()      + "," +
+                    patient.getPassword()      + "," +
+                    patient.getFirstName()     + "," +
+                    patient.getLastName()      + "," +
+                    patient.getPhoneNumber()   + "," +
+                    patient.getAddress()       + "," +
+                    patient.getAge()           + "," +
+                    patient.getDOB()           + "," +
+                    patient.getEmail()         + "," +
+                    patient.getInsuranceID()   + "," +
+                    patient.getMedicalHistory()+ "," +
+                    patient.getPharmacy()      + "," +
+                    patient.getAppointmentsAsString());
             }
             patientWriter.close();
             
@@ -118,7 +119,17 @@ public class Database {
         loadPatientsFromFile(basePath + "Patients.txt");
     }
 
-    
+    /* This method returns a Health care Provider object to an inputed username and password. This is called 
+     * in the login portal in order to pass the correct health care provider to the Portal_HealthcareProviderPortal */
+    public HealthcareProvider healthcareProviderToLogin(String username, String password) {
+        for(HealthcareProvider provider : Clinic49_HealthcareProviders) {
+            if(provider.getUsername().equals(username) && provider.getPassword().equals(password)) {
+                return provider; //found provider with same username and password 
+            }
+        }
+        
+        return null; //did not find matching Health care provider 
+    }
     //The following two methods are private methods called by the public method in order to load
     //the database stored within the different .txt files 
     
@@ -145,28 +156,64 @@ public class Database {
         try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line;
             while ((line = reader.readLine()) != null) {
+                // Split the line into parts
                 String[] parts = line.split(",");
+
+                if (parts.length < 13) {
+                  
+                    continue; // Skip this line
+                }
                 Patient patient = new Patient();
+                // Safely set patient attributes
                 patient.setPatientID(parts[0]);
-                patient.setUsername(parts[1]);
-                patient.setPassword(parts[2]);
-                patient.setFirstName(parts[3]);
-                patient.setLastName(parts[4]);
+                patient.setUsername(get(parts, 1, ""));
+                patient.setPassword(get(parts, 2, ""));
+                patient.setFirstName(get(parts, 3, ""));
+                patient.setLastName(get(parts, 4, ""));
                 patient.setFullName(patient.getFirstName(), patient.getLastName());
-                patient.setPhoneNumber(parts[5]);
-                patient.setAddress(parts[6]);
-                patient.setAge(Integer.parseInt(parts[7]));
-                patient.setDOB(parts[8]);
-                patient.setEmail(parts[9]);
-                patient.setInsuranceID(parts[10]);
-                patient.setMedicalHistory(parts[11]);
-                patient.setPharmacy(parts[12]);
+                patient.setPhoneNumber(get(parts, 5, ""));
+                patient.setAddress(get(parts, 6, ""));
+                // Parse age safely
+                try {
+                    patient.setAge(Integer.parseInt(get(parts, 7, "0")));
+                } catch (NumberFormatException e) {
+                    patient.setAge(0); // Default age if parsing fails
+                }
+                patient.setDOB(get(parts, 8, ""));
+                patient.setEmail(get(parts, 9, ""));
+                patient.setInsuranceID(get(parts, 10, ""));
+                patient.setMedicalHistory(get(parts, 11, ""));
+                patient.setPharmacy(get(parts, 12, ""));
+
+                // Handle appointment details if present
+                if (parts.length > 13) {
+                    StringBuilder appointmentDetails = new StringBuilder();
+                    for (int i = 13; i < parts.length; i++) {
+                        appointmentDetails.append(parts[i]);
+                        if (i < parts.length - 1) {
+                            appointmentDetails.append(","); 
+                        }
+                    }
+                    patient.recreateAppointmentsFromString(appointmentDetails.toString());
+                } else {
+                    patient.recreateAppointmentsFromString(""); // No appointment details
+                }
+
                 Clinic49_Patients.add(patient);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    // Helper method to safely get a value from the parts array
+    private String get(String[] array, int index, String defaultValue) {
+        if (index >= 0 && index < array.length) {
+            return array[index];
+        }
+        return defaultValue;
+    }
+
 
 	
 	 /*The following methods verify if the inputed Username and Password from the login screen
@@ -212,10 +259,4 @@ public class Database {
 		return false;
 	}
 	
-	//TEST METHOD TO BE DELTED 
-	public void printAllUserNames() {
-		for(Patient patient : Clinic49_Patients) {
-			System.out.println(patient.getUsername());
-        }
-	}
 }
